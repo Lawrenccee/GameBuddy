@@ -87,7 +87,7 @@ In addition to the webpack entry file, there will be three scripts involved in t
 **Day 4**: Polish up the app to look good.
 
 - [ ] Style to make it look nice
-- [ ] Add use of API if possible to show relevant links (Google Custom Search API)
+- [ ] Add use of API if possible to show relevant links (Google News API)
 - [ ] Add use of another API to possibly get a summary of the game or twitch (MediaWiki API)
 
 ### Bonus features
