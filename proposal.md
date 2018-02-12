@@ -23,7 +23,7 @@ In GameBuddy, users will be able to:
 
 The Project, will also (hopefully) have:
 - [ ] List of top 5 current news articles on twitch or a game depending on the search (Google Custom Search API)
-- [ ] Summary of Twitch or the game searched for ()
+- [ ] Summary of Twitch or the game searched for (MediaWiki API)
 
 ### Wireframes
 
@@ -64,13 +64,14 @@ In addition to the webpack entry file, there will be three scripts involved in t
 ### Implementation Timeline
 
 **Over the weekend**:
-- [ ] Set up API calls for Twitch.
-- [ ] Learn about D3.js with tutorials and videos.
+- [x] Set up API calls for Twitch.
+- [x] Learn about D3.js with tutorials and videos.
 
 **Day 1**: Setup all necessary Node modules, including getting webpack up and running. Create `webpack.config.js` as well as `package.json`.  Write a basic entry file and the bare bones of all 3 scripts outlined above. Learn the basics of `D3.js`. Goals for the day:
 
 - [ ] Get `webpack` serving files and frame out index.html
 - [ ] Get API call data in the correct form in `graph.js`
+- [ ] Learn more about `D3.js`
 
 **Day 2**: Dedicate this day to learning the `D3.js` API. Learn how to make a bar graph and a pie chart.
 
