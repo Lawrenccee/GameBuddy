@@ -1,0 +1,27 @@
+{
+  "name": "GameBuddy",
+  "version": "1.0.0",
+  "description": "### Background and Overview",
+  "main": "bundle.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lawrenccee/GameBuddy.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Lawrenccee/GameBuddy/issues"
+  },
+  "homepage": "https://github.com/Lawrenccee/GameBuddy#readme",
+  "dependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.1",
+    "webpack": "^3.11.0"
+  }
+}
