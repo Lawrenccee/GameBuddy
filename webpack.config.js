@@ -1,10 +1,11 @@
 const path = require('path');
+// const webpack = require('webpack');
 
 module.exports = {
   context: __dirname,
-  entry: './lib/main.js',
+  entry: './public/javascripts/main.js',
   output: {
-    path: path.resolve(__dirname),
+    path: path.resolve(__dirname, './public'),
     filename: 'bundle.js'
   },
   resolve: {
@@ -22,5 +23,8 @@ module.exports = {
       }
     ]
   },
+  // plugins: [
+  //   new webpack.ProgressPlugin()
+  // ],
   devtool: 'source-map',
 };
