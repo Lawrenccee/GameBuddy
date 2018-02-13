@@ -1,13 +1,16 @@
-export const requestData = ({ gameName = null, numResults = 20, clientId, authToken }) => {
+export const requestData = ({ gameName = null, numResults = 20, clientId, authToken, response }) => {
   let results = {};
   
   const streams = new XMLHttpRequest();
 
   if (gameName) {    
     // make name into a gameId
-    streams.open('GET', `https://api.twitch.tv/helix/streams?first=${numResults}&game_id=${gameId}`);
+    let gameId = null;
+    streams.open('GET', 
+    `https://api.twitch.tv/helix/streams?first=${numResults}&game_id=${gameId}`);
   } else {
-    streams.open('GET', `https://api.twitch.tv/helix/streams?first=${numResults}`);
+    streams.open('GET', 
+    `https://api.twitch.tv/helix/streams?first=${numResults}`);
   }
 
   streams.responseType = 'json';
@@ -33,6 +36,9 @@ export const requestData = ({ gameName = null, numResults = 20, clientId, authTo
           } else {
             results.games[obj.game_id] = {};
             results.games[obj.game_id]["count"] = 1;
+            if (obj.game_id === "") {
+              results.games[obj.game_id]["name"] = "Untitled";
+            }
           }
           results.users[obj.user_id] = {};
           if (!results.viewerCounts.includes(obj.viewer_count)) {
@@ -42,29 +48,6 @@ export const requestData = ({ gameName = null, numResults = 20, clientId, authTo
             results.titles.push(obj.title);
           }
         });
-        
-        // USER DATA
-        let userIds = Object.keys(results.users);
-
-        const users = new XMLHttpRequest();
-        users.open('GET', `https://api.twitch.tv/helix/users?id=${userIds.join('&id=')}`);
-        users.responseType = 'json';
-        users.setRequestHeader('Client-ID', `${clientId}`);
-        users.setRequestHeader('Authorization', `Bearer ${authToken}`);
-        users.send(null);
-
-        users.onreadystatechange = function () {
-          if (users.readyState === DONE) {
-            if (users.status === OK)
-            users.response.data.forEach((user) => {
-              results.users[user.id]["displayName"] = user.display_name;
-              results.users[user.id]["totalViews"] = user.view_count;
-              results.users[user.id]["profileImageUrl"] = user.profile_image_url;
-            });
-          } else {
-            console.log('Error: ' + users.status); // An error occurred during the request.
-          }
-        };
 
         // GAME DATA
         let gameIds = Object.keys(results.games);
@@ -78,23 +61,49 @@ export const requestData = ({ gameName = null, numResults = 20, clientId, authTo
 
         games.onreadystatechange = function () {
           if (games.readyState === DONE) {
-            if (games.status === OK)
+            if (games.status === OK) {
               games.response.data.forEach((game) => {
                 results.games[game.id]["boxArtUrl"] = game.box_art_url;
                 results.games[game.id]["name"] = game.name;
               });
+
+              // USER DATA
+              let userIds = Object.keys(results.users);
+
+              const users = new XMLHttpRequest();
+              users.open('GET', `https://api.twitch.tv/helix/users?id=${userIds.join('&id=')}`);
+              users.responseType = 'json';
+              users.setRequestHeader('Client-ID', `${clientId}`);
+              users.setRequestHeader('Authorization', `Bearer ${authToken}`);
+              users.send(null);
+
+              users.onreadystatechange = function () {
+                if (users.readyState === DONE) {
+                  if (users.status === OK) {
+                    users.response.data.forEach((user) => {
+                      results.users[user.id]["displayName"] = user.display_name;
+                      results.users[user.id]["totalViews"] = user.view_count;
+                      results.users[user.id]["profileImageUrl"] = user.profile_image_url;
+                    });
+
+                    let gameData = Object.values(results.games);
+                    response(gameData);
+                  }
+                } else {
+                  console.log('Error: ' + users.status); // An error occurred during the request.
+                }
+              };
+            }
           } else {
             console.log('Error: ' + games.status); // An error occurred during the request.
           }
         };
       }
+      console.log(results);
     } else {
       console.log(`Error ${streams.status}`);
     }
   };
-
-  console.log(results);
-  return results;
 };
 
 // let data = [

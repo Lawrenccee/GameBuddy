@@ -1,6 +1,15 @@
 import * as TwitchApi from './twitch_api_util';
+import * as Graph from './graph';
 
-TwitchApi.requestData({ 
+let results = TwitchApi.requestData({ 
   clientId: 'xs37hj3ec9i8585sig0axgc7u60t74', 
-  authToken: '55e4vzxtb1gy43imdu9n3t9nwlir01'
+  authToken: '55e4vzxtb1gy43imdu9n3t9nwlir01',
+  response: Graph.makeGameBarGraph,
+  numResults: 100
 });
+
+// console.log(results);
+
+// let gameData = Object.values(results.games);
+
+// Graph.makeGameBarGraph(gameData);

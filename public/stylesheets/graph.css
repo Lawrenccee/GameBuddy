@@ -1,0 +1,42 @@
+body {
+  background-color: #101010;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.main-container {
+  display: flex;
+}
+
+.graph1-container, .graph2-container {
+  height: 100vh;
+  width: 30%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#graph1, #graph2 {
+  width: 100%;
+  height: 50%;
+}
+
+.bar {
+  fill: #574873;
+}
+
+.game-name {
+  font-size: 14px;
+  fill: white;
+}
+
+.ticks line, .ticks path {
+  stroke: lightgray;
+}
+
+.ticks {
+  stroke: white;
+  font-size: 14px;
+}
