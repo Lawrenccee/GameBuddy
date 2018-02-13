@@ -3,7 +3,6 @@ import * as d3 from "d3";
 // pass in games as object.values
 export const makeGameBarGraph = (data) => {
   let dims = d3.select("#graph1").node().getBoundingClientRect();
-  console.log(dims);
   let height = dims.height;
   let width = dims.width;
   let barHeight = height * 0.7 / data.length;
@@ -48,7 +47,7 @@ export const makeGameBarGraph = (data) => {
     });
 
   let xAxis = d3.axisBottom(scale)
-    .tickSize(-height + margin / 2);
+    .tickSize(-height);
 
   svg.insert("g", ":first-child")
     .attr("transform", `translate(${labelWidth + margin}, ${height})`)
@@ -56,7 +55,35 @@ export const makeGameBarGraph = (data) => {
     .call(xAxis);
 };
 
-export const makeGamePieChart = (data) => {
-  let height = 500;
-  let width = 700;
+export const makeViewerPieChart = (data) => {
+  let dims = d3.select("#graph2").node().getBoundingClientRect();
+  let height = dims.height;
+  let width = dims.width;
+  let radius = Math.min(height, width) / 2;
+  let innerRadius = 0;
+  let color = d3.scaleOrdinal(d3.schemeCategory20b);
+
+  let svg = d3.select("#graph2")
+    .append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .append("g")
+    .attr("transform", `translate(${width / 2}, ${height / 2})`);
+
+  let arc = d3.arc()
+    .innerRadius(innerRadius)
+    .outerRadius(radius);
+
+  let pie = d3.pie()
+    .value(function(d) { return d.viewer_count; })
+    .sort(null);
+
+  let path = svg.selectAll("path")
+    .data(pie(data))
+    .enter()
+    .append("path")
+    .attr("d", arc)
+    .attr("fill", function(d, i) {
+      return color(d.title);
+    });
 };

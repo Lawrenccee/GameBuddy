@@ -83,7 +83,8 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 var results = TwitchApi.requestData({
   clientId: 'xs37hj3ec9i8585sig0axgc7u60t74',
   authToken: '55e4vzxtb1gy43imdu9n3t9nwlir01',
-  response: Graph.makeGameBarGraph,
+  graph1: Graph.makeGameBarGraph,
+  graph2: Graph.makeViewerPieChart,
   numResults: 100
 });
 
@@ -110,7 +111,8 @@ var requestData = exports.requestData = function requestData(_ref) {
       numResults = _ref$numResults === undefined ? 20 : _ref$numResults,
       clientId = _ref.clientId,
       authToken = _ref.authToken,
-      response = _ref.response;
+      graph1 = _ref.graph1,
+      graph2 = _ref.graph2;
 
   var results = {};
 
@@ -198,7 +200,10 @@ var requestData = exports.requestData = function requestData(_ref) {
                     });
 
                     var gameData = Object.values(results.games);
-                    response(gameData);
+                    graph1(gameData);
+
+                    var viewerData = Object.values(results.streamData);
+                    graph2(viewerData);
                   }
                 } else {
                   console.log('Error: ' + users.status); // An error occurred during the request.
@@ -9869,7 +9874,7 @@ function transform(node) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.makeGamePieChart = exports.makeGameBarGraph = undefined;
+exports.makeViewerPieChart = exports.makeGameBarGraph = undefined;
 
 var _d = __webpack_require__(175);
 
@@ -9880,7 +9885,6 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 // pass in games as object.values
 var makeGameBarGraph = exports.makeGameBarGraph = function makeGameBarGraph(data) {
   var dims = d3.select("#graph1").node().getBoundingClientRect();
-  console.log(dims);
   var height = dims.height;
   var width = dims.width;
   var barHeight = height * 0.7 / data.length;
@@ -9910,14 +9914,30 @@ var makeGameBarGraph = exports.makeGameBarGraph = function makeGameBarGraph(data
     return scale(d.count);
   });
 
-  var xAxis = d3.axisBottom(scale).tickSize(-height + margin / 2);
+  var xAxis = d3.axisBottom(scale).tickSize(-height);
 
   svg.insert("g", ":first-child").attr("transform", "translate(" + (labelWidth + margin) + ", " + height + ")").attr("class", "ticks").call(xAxis);
 };
 
-var makeGamePieChart = exports.makeGamePieChart = function makeGamePieChart(data) {
-  var height = 500;
-  var width = 700;
+var makeViewerPieChart = exports.makeViewerPieChart = function makeViewerPieChart(data) {
+  var dims = d3.select("#graph2").node().getBoundingClientRect();
+  var height = dims.height;
+  var width = dims.width;
+  var radius = Math.min(height, width) / 2;
+  var innerRadius = 0;
+  var color = d3.scaleOrdinal(d3.schemeCategory20b);
+
+  var svg = d3.select("#graph2").append("svg").attr("width", width).attr("height", height).append("g").attr("transform", "translate(" + width / 2 + ", " + height / 2 + ")");
+
+  var arc = d3.arc().innerRadius(innerRadius).outerRadius(radius);
+
+  var pie = d3.pie().value(function (d) {
+    return d.viewer_count;
+  }).sort(null);
+
+  var path = svg.selectAll("path").data(pie(data)).enter().append("path").attr("d", arc).attr("fill", function (d, i) {
+    return color(d.title);
+  });
 };
 
 /***/ }),

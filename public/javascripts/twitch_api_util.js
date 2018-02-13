@@ -1,4 +1,4 @@
-export const requestData = ({ gameName = null, numResults = 20, clientId, authToken, response }) => {
+export const requestData = ({ gameName = null, numResults = 20, clientId, authToken, graph1, graph2 }) => {
   let results = {};
   
   const streams = new XMLHttpRequest();
@@ -87,7 +87,10 @@ export const requestData = ({ gameName = null, numResults = 20, clientId, authTo
                     });
 
                     let gameData = Object.values(results.games);
-                    response(gameData);
+                    graph1(gameData);
+
+                    let viewerData = Object.values(results.streamData);
+                    graph2(viewerData);
                   }
                 } else {
                   console.log('Error: ' + users.status); // An error occurred during the request.
