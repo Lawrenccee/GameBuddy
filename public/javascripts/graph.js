@@ -290,3 +290,41 @@ export const makeViewerBarGraph = (data) => {
       .style("left", (d3.event.layerX + 10) + "px");
   });
 };
+
+export const makeViewerBubbleGraph = (data) => {
+  let dims = d3.select("#graph2").node().getBoundingClientRect();
+  let height = dims.height;
+  let width = dims.width;
+  let barHeight = height * 0.7 / data.length;
+  let barPadding = height * 0.3 / data.length;
+  let labelWidth = 0;
+  let margin = 20;
+  let color = d3.scaleOrdinal(d3.schemeCategory20b);
+  let rMin = 5;
+  let rMax = 20;
+  let xScale = d3.scaleLog()
+    .domain([d3.extent(data, function (d) { return d.viewer_count; })])
+    .range([0, width]);
+  let yScale = d3.scaleLog()
+    .domain(function (d) { return d.title; })
+    .range([0, height]);
+  let rScale = d3.scaleSqrt()
+    .domain([0, d3.max(data, function(d) { return d.viewer_count; })])
+    .range([rMin, rMax]);
+
+  let svg = d3.select("#graph2").append("svg")
+    .attr("height", height + margin)
+    .attr("width", width + margin)
+    .append("g")
+    .attr("transform", "translate(0, 0)");
+
+  let bubble = svg.selectAll(".bubble")
+    .data(data)
+    .enter()
+    .append("circle")
+    .attr("class", "bubble")
+    .attr("cx", function(d) { return xScale(d.viewer_count); })
+    .attr("cy", function(d) { return yScale(d.title); })
+    .attr("r", function(d) { return rScale(d.viewer_count); })
+    .attr("fill", function(d, i) { return color(i); });
+};
