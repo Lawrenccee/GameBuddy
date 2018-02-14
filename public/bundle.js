@@ -83,9 +83,9 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 var results = TwitchApi.requestData({
   clientId: 'xs37hj3ec9i8585sig0axgc7u60t74',
   authToken: '55e4vzxtb1gy43imdu9n3t9nwlir01',
-  graph1: Graph.makeGameBarGraph,
-  graph2: Graph.makeViewerPieChart,
-  numResults: 100
+  graph1: Graph.makeGamePieChart,
+  graph2: Graph.makeViewerBarGraph,
+  numResults: 20
 });
 
 // console.log(results);
@@ -9874,7 +9874,7 @@ function transform(node) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.makeViewerPieChart = exports.makeGameBarGraph = undefined;
+exports.makeViewerBarGraph = exports.makeViewerPieChart = exports.makeGamePieChart = exports.makeGameBarGraph = undefined;
 
 var _d = __webpack_require__(175);
 
@@ -9900,12 +9900,6 @@ var makeGameBarGraph = exports.makeGameBarGraph = function makeGameBarGraph(data
     return "translate(0, " + (i * (barHeight + barPadding) + barPadding) + ")";
   });
 
-  bar.append("text").attr("class", "game-name").attr("y", barHeight / 2).attr("dy", ".35em").text(function (d) {
-    return d.name;
-  }).each(function () {
-    labelWidth = Math.ceil(Math.max(labelWidth, this.getBBox().width));
-  });
-
   var scale = d3.scaleLinear().domain([0, d3.max(data, function (d) {
     return d.count;
   })]).range([0, width - labelWidth - margin * 2]);
@@ -9917,6 +9911,83 @@ var makeGameBarGraph = exports.makeGameBarGraph = function makeGameBarGraph(data
   var xAxis = d3.axisBottom(scale).tickSize(-height);
 
   svg.insert("g", ":first-child").attr("transform", "translate(" + (labelWidth + margin) + ", " + height + ")").attr("class", "ticks").call(xAxis);
+
+  var tooltip = d3.select("#graph1").append("div").attr("class", "tooltip");
+
+  tooltip.append("div").attr("class", "name");
+
+  tooltip.append("div").attr("class", "count");
+
+  tooltip.append("div").attr("class", "percent");
+
+  bar.on("mouseover", function (d) {
+    var totalCounts = d3.sum(data.map(function (dataObj) {
+      return dataObj.count;
+    }));
+
+    var percent = Math.round(1000 * d.count / totalCounts) / 10;
+    tooltip.select(".name").html(d.name);
+    tooltip.select(".count").html(d.count);
+    tooltip.select(".percent").html(percent + "%");
+    tooltip.style("display", "block");
+  });
+
+  bar.on("mouseout", function (d) {
+    tooltip.style("display", "none");
+  });
+
+  bar.on("mousemove", function (d) {
+    tooltip.style("top", d3.event.layerY + 10 + "px").style("left", d3.event.layerX + 10 + "px");
+  });
+};
+
+var makeGamePieChart = exports.makeGamePieChart = function makeGamePieChart(data) {
+  var dims = d3.select("#graph2").node().getBoundingClientRect();
+  var height = dims.height;
+  var width = dims.width;
+  var radius = Math.min(height, width) / 2;
+  var innerRadius = radius / 2;
+  var color = d3.scaleOrdinal(d3.schemeCategory20b);
+
+  var svg = d3.select("#graph1").append("svg").attr("width", width).attr("height", height).append("g").attr("transform", "translate(" + width / 2 + ", " + height / 2 + ")");
+
+  var arc = d3.arc().innerRadius(innerRadius).outerRadius(radius);
+
+  var pie = d3.pie().value(function (d) {
+    return d.count;
+  }).sort(null);
+
+  var path = svg.selectAll("path").data(pie(data)).enter().append("path").attr("d", arc).attr("fill", function (d, i) {
+    return color(i);
+  });
+
+  var tooltip = d3.select("#graph1").append("div").attr("class", "tooltip");
+
+  tooltip.append("div").attr("class", "name");
+
+  tooltip.append("div").attr("class", "count");
+
+  tooltip.append("div").attr("class", "percent");
+
+  path.on("mouseover", function (d) {
+    var totalCounts = d3.sum(data.map(function (dataObj) {
+      return dataObj.count;
+    }));
+
+    var percent = Math.round(1000 * d.data.count / totalCounts) / 10;
+    tooltip.select(".name").html(d.data.name);
+    tooltip.select(".count").html(d.data.count);
+    tooltip.select(".percent").html(percent + "%");
+    tooltip.style("display", "block");
+  });
+
+  path.on("mouseout", function (d) {
+    tooltip.style("display", "none");
+  });
+
+  path.on("mousemove", function (d) {
+    tooltip.style("top", d3.event.layerY + 10 + "px").style("left", d3.event.layerX + 10 + "px");
+  });
 };
 
 var makeViewerPieChart = exports.makeViewerPieChart = function makeViewerPieChart(data) {
@@ -9924,7 +9995,7 @@ var makeViewerPieChart = exports.makeViewerPieChart = function makeViewerPieChar
   var height = dims.height;
   var width = dims.width;
   var radius = Math.min(height, width) / 2;
-  var innerRadius = 0;
+  var innerRadius = radius / 2;
   var color = d3.scaleOrdinal(d3.schemeCategory20b);
 
   var svg = d3.select("#graph2").append("svg").attr("width", width).attr("height", height).append("g").attr("transform", "translate(" + width / 2 + ", " + height / 2 + ")");
@@ -9936,7 +10007,93 @@ var makeViewerPieChart = exports.makeViewerPieChart = function makeViewerPieChar
   }).sort(null);
 
   var path = svg.selectAll("path").data(pie(data)).enter().append("path").attr("d", arc).attr("fill", function (d, i) {
-    return color(d.title);
+    return color(i);
+  });
+
+  var tooltip = d3.select("#graph2").append("div").attr("class", "tooltip");
+
+  tooltip.append("div").attr("class", "title");
+
+  tooltip.append("div").attr("class", "viewer-count");
+
+  tooltip.append("div").attr("class", "percent");
+
+  path.on("mouseover", function (d) {
+    var totalViews = d3.sum(data.map(function (dataObj) {
+      return dataObj.viewer_count;
+    }));
+
+    var percent = Math.round(1000 * d.data.viewer_count / totalViews) / 10;
+    tooltip.select(".title").html(d.data.title);
+    tooltip.select(".viewer-count").html(d.data.viewer_count);
+    tooltip.select(".percent").html(percent + "%");
+    tooltip.style("display", "block");
+  });
+
+  path.on("mouseout", function (d) {
+    tooltip.style("display", "none");
+  });
+
+  path.on("mousemove", function (d) {
+    tooltip.style("top", d3.event.layerY + 10 + "px").style("left", d3.event.layerX + 10 + "px");
+  });
+};
+
+var makeViewerBarGraph = exports.makeViewerBarGraph = function makeViewerBarGraph(data) {
+  var dims = d3.select("#graph2").node().getBoundingClientRect();
+  var height = dims.height;
+  var width = dims.width;
+  var barHeight = height * 0.7 / data.length;
+  var barPadding = height * 0.3 / data.length;
+  var labelWidth = 0;
+  var margin = 20;
+
+  var svg = d3.select("#graph2").append("svg").attr("height", height + margin).attr("width", width + margin);
+
+  var bar = svg.selectAll("g").data(data).enter().append("g");
+
+  bar.attr("class", "bar").attr("cx", 0).attr("transform", function (d, i) {
+    return "translate(0, " + (i * (barHeight + barPadding) + barPadding) + ")";
+  });
+
+  var scale = d3.scaleLinear().domain([0, d3.max(data, function (d) {
+    return d.viewer_count / 1000;
+  })]).range([0, width - labelWidth - margin * 2]);
+
+  bar.append("rect").attr("transform", "translate(" + (labelWidth + margin) + ", 0)").attr("height", barHeight).attr("width", function (d) {
+    return scale(d.viewer_count / 1000);
+  });
+
+  var xAxis = d3.axisBottom(scale).tickSize(-height);
+
+  svg.insert("g", ":first-child").attr("transform", "translate(" + (labelWidth + margin) + ", " + height + ")").attr("class", "ticks").call(xAxis);
+
+  var tooltip = d3.select("#graph2").append("div").attr("class", "tooltip");
+
+  tooltip.append("div").attr("class", "title");
+
+  tooltip.append("div").attr("class", "viewer-count");
+
+  tooltip.append("div").attr("class", "percent");
+
+  bar.on("mouseover", function (d) {
+    var totalViews = d3.sum(data.map(function (dataObj) {
+      return dataObj.viewer_count;
+    }));
+
+    var percent = Math.round(1000 * d.viewer_count / totalViews) / 10;
+    tooltip.select(".title").html(d.title);
+    tooltip.select(".viewer-count").html(d.viewer_count);
+    tooltip.select(".percent").html(percent + "%");
+    tooltip.style("display", "block");
+  });
+
+  bar.on("mouseout", function (d) {
+    tooltip.style("display", "none");
+  });
+
+  bar.on("mousemove", function (d) {
+    tooltip.style("top", d3.event.layerY + 10 + "px").style("left", d3.event.layerX + 10 + "px");
   });
 };
 

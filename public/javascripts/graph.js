@@ -25,16 +25,6 @@ export const makeGameBarGraph = (data) => {
       return `translate(0, ${i * (barHeight + barPadding) + barPadding})`;
     });
 
-  bar.append("text")
-    .attr("class", "game-name")
-    .attr("y", barHeight / 2)
-    .attr("dy", ".35em")
-    .text(function(d) { 
-      return d.name; 
-    }).each(function() {
-      labelWidth = Math.ceil(Math.max(labelWidth, this.getBBox().width));
-    });
-
   let scale = d3.scaleLinear()
     .domain([0, d3.max(data, function (d) { return d.count; })])
     .range([0, width - labelWidth - margin * 2]);
@@ -53,6 +43,107 @@ export const makeGameBarGraph = (data) => {
     .attr("transform", `translate(${labelWidth + margin}, ${height})`)
     .attr("class", "ticks")
     .call(xAxis);
+
+  let tooltip = d3.select("#graph1")
+    .append("div")
+    .attr("class", "tooltip");
+
+  tooltip.append("div")
+    .attr("class", "name");
+
+  tooltip.append("div")
+    .attr("class", "count");
+
+  tooltip.append("div")
+    .attr("class", "percent");
+
+  bar.on("mouseover", function (d) {
+    let totalCounts = d3.sum(data.map(function (dataObj) {
+      return dataObj.count;
+    }));
+
+    let percent = Math.round(1000 * d.count / totalCounts) / 10;
+    tooltip.select(".name").html(d.name);
+    tooltip.select(".count").html(d.count);
+    tooltip.select(".percent").html(`${percent}%`);
+    tooltip.style("display", "block");
+  });
+
+  bar.on("mouseout", function (d) {
+    tooltip.style("display", "none");
+  });
+
+  bar.on("mousemove", function (d) {
+    tooltip.style("top", (d3.event.layerY + 10) + "px")
+      .style("left", (d3.event.layerX + 10) + "px");
+  });
+};
+
+export const makeGamePieChart = (data) => {
+  let dims = d3.select("#graph2").node().getBoundingClientRect();
+  let height = dims.height;
+  let width = dims.width;
+  let radius = Math.min(height, width) / 2;
+  let innerRadius = radius / 2;
+  let color = d3.scaleOrdinal(d3.schemeCategory20b);
+
+  let svg = d3.select("#graph1")
+    .append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .append("g")
+    .attr("transform", `translate(${width / 2}, ${height / 2})`);
+
+  let arc = d3.arc()
+    .innerRadius(innerRadius)
+    .outerRadius(radius);
+
+  let pie = d3.pie()
+    .value(function (d) { return d.count; })
+    .sort(null);
+
+  let path = svg.selectAll("path")
+    .data(pie(data))
+    .enter()
+    .append("path")
+    .attr("d", arc)
+    .attr("fill", function (d, i) {
+      return color(i);
+    });
+
+  let tooltip = d3.select("#graph1")
+    .append("div")
+    .attr("class", "tooltip");
+
+  tooltip.append("div")
+    .attr("class", "name");
+
+  tooltip.append("div")
+    .attr("class", "count");
+
+  tooltip.append("div")
+    .attr("class", "percent");
+
+  path.on("mouseover", function (d) {
+    let totalCounts = d3.sum(data.map(function (dataObj) {
+      return dataObj.count;
+    }));
+
+    let percent = Math.round(1000 * d.data.count / totalCounts) / 10;
+    tooltip.select(".name").html(d.data.name);
+    tooltip.select(".count").html(d.data.count);
+    tooltip.select(".percent").html(`${percent}%`);
+    tooltip.style("display", "block");
+  });
+
+  path.on("mouseout", function (d) {
+    tooltip.style("display", "none");
+  });
+
+  path.on("mousemove", function (d) {
+    tooltip.style("top", (d3.event.layerY + 10) + "px")
+      .style("left", (d3.event.layerX + 10) + "px");
+  });
 };
 
 export const makeViewerPieChart = (data) => {
@@ -60,7 +151,7 @@ export const makeViewerPieChart = (data) => {
   let height = dims.height;
   let width = dims.width;
   let radius = Math.min(height, width) / 2;
-  let innerRadius = 0;
+  let innerRadius = radius / 2;
   let color = d3.scaleOrdinal(d3.schemeCategory20b);
 
   let svg = d3.select("#graph2")
@@ -84,6 +175,118 @@ export const makeViewerPieChart = (data) => {
     .append("path")
     .attr("d", arc)
     .attr("fill", function(d, i) {
-      return color(d.title);
+      return color(i);
     });
+
+  let tooltip = d3.select("#graph2")
+    .append("div")
+    .attr("class", "tooltip");
+
+  tooltip.append("div")
+    .attr("class", "title");
+
+  tooltip.append("div")
+    .attr("class", "viewer-count");
+
+  tooltip.append("div")
+    .attr("class", "percent");
+
+  path.on("mouseover", function (d) {
+    let totalViews = d3.sum(data.map(function (dataObj) {
+      return dataObj.viewer_count;
+    }));
+
+    let percent = Math.round(1000 * d.data.viewer_count / totalViews) / 10;
+    tooltip.select(".title").html(d.data.title);
+    tooltip.select(".viewer-count").html(d.data.viewer_count);
+    tooltip.select(".percent").html(`${percent}%`);
+    tooltip.style("display", "block");
+  });
+
+  path.on("mouseout", function (d) {
+    tooltip.style("display", "none");
+  });
+
+  path.on("mousemove", function (d) {
+    tooltip.style("top", (d3.event.layerY + 10) + "px")
+      .style("left", (d3.event.layerX + 10) + "px");
+  });
+};
+
+export const makeViewerBarGraph = (data) => {
+  let dims = d3.select("#graph2").node().getBoundingClientRect();
+  let height = dims.height;
+  let width = dims.width;
+  let barHeight = height * 0.7 / data.length;
+  let barPadding = height * 0.3 / data.length;
+  let labelWidth = 0;
+  let margin = 20;
+
+  let svg = d3.select("#graph2").append("svg")
+    .attr("height", height + margin)
+    .attr("width", width + margin);
+
+  let bar = svg.selectAll("g")
+    .data(data)
+    .enter()
+    .append("g");
+
+  bar.attr("class", "bar")
+    .attr("cx", 0)
+    .attr("transform", function (d, i) {
+      return `translate(0, ${i * (barHeight + barPadding) + barPadding})`;
+    });
+
+  let scale = d3.scaleLinear()
+    .domain([0, d3.max(data, function (d) { return d.viewer_count / 1000; })])
+    .range([0, width - labelWidth - margin * 2]);
+
+  bar.append("rect")
+    .attr("transform", `translate(${labelWidth + margin}, 0)`)
+    .attr("height", barHeight)
+    .attr("width", function (d) {
+      return scale(d.viewer_count / 1000);
+    });
+
+  let xAxis = d3.axisBottom(scale)
+    .tickSize(-height);
+
+  svg.insert("g", ":first-child")
+    .attr("transform", `translate(${labelWidth + margin}, ${height})`)
+    .attr("class", "ticks")
+    .call(xAxis);
+
+  let tooltip = d3.select("#graph2")
+    .append("div")
+    .attr("class", "tooltip");
+
+  tooltip.append("div")
+    .attr("class", "title");
+
+  tooltip.append("div")
+    .attr("class", "viewer-count");
+
+  tooltip.append("div")
+    .attr("class", "percent");
+
+  bar.on("mouseover", function (d) {
+    let totalViews = d3.sum(data.map(function (dataObj) {
+      return dataObj.viewer_count;
+    }));
+
+    let percent = Math.round(1000 * d.viewer_count / totalViews) / 10;
+    tooltip.select(".title").html(d.title);
+    tooltip.select(".viewer-count").html(d.viewer_count);
+    tooltip.select(".percent").html(`${percent}%`);
+    tooltip.style("display", "block");
+  });
+
+  bar.on("mouseout", function (d) {
+    tooltip.style("display", "none");
+  });
+
+  bar.on("mousemove", function (d) {
+    tooltip.style("top", (d3.event.layerY + 10) + "px")
+      .style("left", (d3.event.layerX + 10) + "px");
+  });
 };
