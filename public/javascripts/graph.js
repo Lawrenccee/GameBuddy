@@ -146,6 +146,42 @@ export const makeGamePieChart = (data) => {
   });
 };
 
+export const makeGameBubbleGraph = (data) => {
+  let dims = d3.select("#graph1").node().getBoundingClientRect();
+  let height = dims.height;
+  let width = dims.width;
+  let labelWidth = 0;
+  let margin = 20;
+  let color = d3.scaleOrdinal(d3.schemeCategory20b);
+
+  let svg = d3.select("#graph1").append("svg")
+    .attr("height", height + margin)
+    .attr("width", width + margin);
+
+  let bubble = d3.pack({ children: data })
+    .size([width, height])
+    .padding(1.5);
+
+  let nodes = d3.hierarchy({ children: data })
+    .sum(function (d) { return d.count; });
+
+  let bubbles = svg.selectAll(".bubble")
+    .attr("transform", "translate(0,0)")
+    .data(bubble(nodes).descendants())
+    .enter()
+    .filter(function (d) {
+      return !d.children;
+    })
+    .append("g");
+
+  bubbles.append("circle")
+    .attr("class", "bubble")
+    .attr("cx", function (d) { return d.x; })
+    .attr("cy", function (d) { return d.y; })
+    .attr("r", function (d) { return d.r; })
+    .attr("fill", function (d, i) { return color(i); });
+};
+
 export const makeViewerPieChart = (data) => {
   let dims = d3.select("#graph2").node().getBoundingClientRect();
   let height = dims.height;
@@ -295,36 +331,34 @@ export const makeViewerBubbleGraph = (data) => {
   let dims = d3.select("#graph2").node().getBoundingClientRect();
   let height = dims.height;
   let width = dims.width;
-  let barHeight = height * 0.7 / data.length;
-  let barPadding = height * 0.3 / data.length;
   let labelWidth = 0;
   let margin = 20;
   let color = d3.scaleOrdinal(d3.schemeCategory20b);
-  let rMin = 5;
-  let rMax = 20;
-  let xScale = d3.scaleLog()
-    .domain([d3.extent(data, function (d) { return d.viewer_count; })])
-    .range([0, width]);
-  let yScale = d3.scaleLog()
-    .domain(function (d) { return d.title; })
-    .range([0, height]);
-  let rScale = d3.scaleSqrt()
-    .domain([0, d3.max(data, function(d) { return d.viewer_count; })])
-    .range([rMin, rMax]);
 
   let svg = d3.select("#graph2").append("svg")
     .attr("height", height + margin)
-    .attr("width", width + margin)
-    .append("g")
-    .attr("transform", "translate(0, 0)");
+    .attr("width", width + margin);
 
-  let bubble = svg.selectAll(".bubble")
-    .data(data)
+  let bubble = d3.pack({ children: data })
+    .size([width, height])
+    .padding(1.5);
+
+  let nodes = d3.hierarchy({children: data})
+    .sum(function (d) { return d.viewer_count; });
+
+  let bubbles = svg.selectAll(".bubble")
+    .attr("transform", "translate(0,0)")
+    .data(bubble(nodes).descendants())
     .enter()
-    .append("circle")
+    .filter(function (d) {
+      return !d.children;
+    })
+    .append("g");
+
+  bubbles.append("circle")
     .attr("class", "bubble")
-    .attr("cx", function(d) { return xScale(d.viewer_count); })
-    .attr("cy", function(d) { return yScale(d.title); })
-    .attr("r", function(d) { return rScale(d.viewer_count); })
+    .attr("cx", function(d) { return d.x; })
+    .attr("cy", function(d) { return d.y; })
+    .attr("r", function(d) { return d.r; })
     .attr("fill", function(d, i) { return color(i); });
 };

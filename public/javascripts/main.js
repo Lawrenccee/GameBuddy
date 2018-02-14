@@ -4,7 +4,7 @@ import * as Graph from './graph';
 let results = TwitchApi.requestData({ 
   clientId: 'xs37hj3ec9i8585sig0axgc7u60t74', 
   authToken: '55e4vzxtb1gy43imdu9n3t9nwlir01',
-  graph1: Graph.makeGamePieChart,
+  graph1: Graph.makeGameBubbleGraph,
   graph2: Graph.makeViewerBubbleGraph,
   numResults: 20
 });
