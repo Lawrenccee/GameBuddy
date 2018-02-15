@@ -9694,7 +9694,6 @@ var requestData = exports.requestData = function requestData(_ref) {
                       graph1(gameData);
                       StreamList.makeGameOptions(results.games, results.gameIds);
                     } else {
-                      console.log(results.games);
                       var artSrc = Object.values(results.games)[0].boxArtUrl.replace('-{width}x{height}', '');
                       gameArt.src = artSrc;
                       graph2Element.style.height = "70%";
@@ -9704,18 +9703,12 @@ var requestData = exports.requestData = function requestData(_ref) {
                     var viewerData = Object.values(results.streamData);
                     graph2(viewerData, results.users);
                   }
-                } else {
-                  console.log('Error: ' + users.status); // An error occurred during the request.
                 }
               };
             }
-          } else {
-            console.log('Error: ' + games.status); // An error occurred during the request.
           }
         };
       }
-    } else {
-      console.log("Error " + streams.status);
     }
   };
 };

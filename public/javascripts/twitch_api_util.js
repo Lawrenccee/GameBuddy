@@ -107,7 +107,6 @@ export const requestData = ({ gameId = "all", numResults = 20, clientId, authTok
                       graph1(gameData);
                       StreamList.makeGameOptions(results.games, results.gameIds);                      
                     } else {
-                      console.log(results.games);
                       let artSrc = Object.values(results.games)[0].boxArtUrl.replace('-{width}x{height}', '');
                       gameArt.src = artSrc;                      
                       graph2Element.style.height = "70%";
@@ -117,18 +116,12 @@ export const requestData = ({ gameId = "all", numResults = 20, clientId, authTok
                     let viewerData = Object.values(results.streamData);
                     graph2(viewerData, results.users);
                   }
-                } else {
-                  console.log('Error: ' + users.status); // An error occurred during the request.
                 }
               };
             }
-          } else {
-            console.log('Error: ' + games.status); // An error occurred during the request.
           }
         };
       }
-    } else {
-      console.log(`Error ${streams.status}`);
     }
   };
 };
