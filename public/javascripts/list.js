@@ -41,6 +41,8 @@ export const makeGameOptions = (games, gameOrder) => {
     option.value = gameId;
     option.innerHTML = `${games[gameId].name}`;
 
-    gameOptions.appendChild(option);
+    if (gameId) {
+      gameOptions.appendChild(option);
+    }
   });
 };

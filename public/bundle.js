@@ -23695,7 +23695,9 @@ var makeGameOptions = exports.makeGameOptions = function makeGameOptions(games, 
     option.value = gameId;
     option.innerHTML = "" + games[gameId].name;
 
-    gameOptions.appendChild(option);
+    if (gameId) {
+      gameOptions.appendChild(option);
+    }
   });
 };
 
