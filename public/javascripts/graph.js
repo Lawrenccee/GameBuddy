@@ -9,6 +9,7 @@ export const makeGameBarGraph = (data) => {
   let barPadding = height * 0.3 / data.length;
   let labelWidth = 0;
   let margin = 20;
+  let color = d3.scaleOrdinal(d3.schemeCategory20b);
 
   let svg = d3.select("#graph1").append("svg")
     .attr("height", height + margin)
@@ -23,7 +24,8 @@ export const makeGameBarGraph = (data) => {
     .attr("cx", 0)
     .attr("transform", function(d, i) {
       return `translate(0, ${i * (barHeight + barPadding) + barPadding})`;
-    });
+    })
+    .attr("fill", function(d, i) { return color(i); });
 
   let scale = d3.scaleLinear()
     .domain([0, d3.max(data, function (d) { return d.count; })])
@@ -180,6 +182,40 @@ export const makeGameBubbleGraph = (data) => {
     .attr("cy", function (d) { return d.y; })
     .attr("r", function (d) { return d.r; })
     .attr("fill", function (d, i) { return color(i); });
+
+  let tooltip = d3.select("#graph1")
+    .append("div")
+    .attr("class", "tooltip");
+
+  tooltip.append("div")
+    .attr("class", "name");
+
+  tooltip.append("div")
+    .attr("class", "count");
+
+  tooltip.append("div")
+    .attr("class", "percent");
+
+  bubbles.on("mouseover", function (d) {
+    let totalCounts = d3.sum(data.map(function (dataObj) {
+      return dataObj.count;
+    }));
+
+    let percent = Math.round(1000 * d.data.count / totalCounts) / 10;
+    tooltip.select(".name").html(d.data.name);
+    tooltip.select(".count").html(d.data.count);
+    tooltip.select(".percent").html(`${percent}%`);
+    tooltip.style("display", "block");
+  });
+
+  bubbles.on("mouseout", function (d) {
+    tooltip.style("display", "none");
+  });
+
+  bubbles.on("mousemove", function (d) {
+    tooltip.style("top", (d3.event.layerY + 10) + "px")
+      .style("left", (d3.event.layerX + 10) + "px");
+  });
 };
 
 export const makeViewerPieChart = (data) => {
@@ -257,6 +293,7 @@ export const makeViewerBarGraph = (data) => {
   let barPadding = height * 0.3 / data.length;
   let labelWidth = 0;
   let margin = 20;
+  let color = d3.scaleOrdinal(d3.schemeCategory20b);  
 
   let svg = d3.select("#graph2").append("svg")
     .attr("height", height + margin)
@@ -271,7 +308,8 @@ export const makeViewerBarGraph = (data) => {
     .attr("cx", 0)
     .attr("transform", function (d, i) {
       return `translate(0, ${i * (barHeight + barPadding) + barPadding})`;
-    });
+    })
+    .attr("fill", function (d, i) { return color(i); });
 
   let scale = d3.scaleLinear()
     .domain([0, d3.max(data, function (d) { return d.viewer_count / 1000; })])
@@ -361,4 +399,38 @@ export const makeViewerBubbleGraph = (data) => {
     .attr("cy", function(d) { return d.y; })
     .attr("r", function(d) { return d.r; })
     .attr("fill", function(d, i) { return color(i); });
+
+  let tooltip = d3.select("#graph2")
+    .append("div")
+    .attr("class", "tooltip");
+
+  tooltip.append("div")
+    .attr("class", "title");
+
+  tooltip.append("div")
+    .attr("class", "viewer-count");
+
+  tooltip.append("div")
+    .attr("class", "percent");
+
+  bubbles.on("mouseover", function (d) {
+    let totalViews = d3.sum(data.map(function (dataObj) {
+      return dataObj.viewer_count;
+    }));
+
+    let percent = Math.round(1000 * d.data.viewer_count / totalViews) / 10;
+    tooltip.select(".title").html(d.data.title);
+    tooltip.select(".viewer-count").html(d.data.viewer_count);
+    tooltip.select(".percent").html(`${percent}%`);
+    tooltip.style("display", "block");
+  });
+
+  bubbles.on("mouseout", function (d) {
+    tooltip.style("display", "none");
+  });
+
+  bubbles.on("mousemove", function (d) {
+    tooltip.style("top", (d3.event.layerY + 10) + "px")
+      .style("left", (d3.event.layerX + 10) + "px");
+  });
 };

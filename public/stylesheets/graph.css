@@ -1,5 +1,5 @@
 body {
-  background-color: #101010;
+  background-color: #FFF;
   height: 100vh;
   width: 100vw;
   overflow: hidden;
@@ -9,28 +9,25 @@ body {
   display: flex;
 }
 
-.graph1-container, .graph2-container {
+.graph1-container, .graph2-container, .news-list-container {
   height: 100vh;
   width: 30%;
-  overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 20px;
 }
 
 #graph1, #graph2 {
   width: 100%;
   height: 50%;
   position: relative;
-}
-
-.bar {
-  fill: #574873;
+  padding-right: 20px;  
 }
 
 .game-name {
   font-size: 14px;
-  fill: white;
+  fill: black;
 }
 
 .ticks line, .ticks path {
@@ -38,7 +35,7 @@ body {
 }
 
 .ticks {
-  stroke: white;
+  stroke: black;
   font-size: 14px;
 }
 
@@ -54,4 +51,17 @@ body {
   width: 80px;
   word-break: break-word;
   z-index: 10;
+}
+
+.stream-list-container {
+  height: 30vh;
+  width: 100%;
+  overflow: auto;  
+  display: flex;
+  flex-direction: column;
+  color: black;
+}
+
+.stream-list-container a {
+  color: #4C3777;
 }
