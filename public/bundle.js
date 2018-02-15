@@ -9772,8 +9772,8 @@ var makeGameBarGraph = exports.makeGameBarGraph = function makeGameBarGraph(data
     }));
 
     var percent = Math.round(1000 * d.count / totalCounts) / 10;
-    tooltip.select(".name").html("<p>Game:</p> " + d.data.name);
-    tooltip.select(".count").html("<p>Count:</p> " + d.data.count);
+    tooltip.select(".name").html("<p>Game:</p> " + d.name);
+    tooltip.select(".count").html("<p>Count:</p> " + d.count);
     tooltip.select(".percent").html("<p>Percent of Total:</p> " + percent + "%");
     tooltip.style("display", "block");
   });
