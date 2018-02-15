@@ -72,6 +72,8 @@ body {
 
 .news-list-container img {
   width: 100%;
+  object-fit: contain;
+  align-self: center;
   overflow: auto;  
   display: flex;
   flex-direction: column;
