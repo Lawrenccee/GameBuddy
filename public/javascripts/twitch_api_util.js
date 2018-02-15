@@ -1,13 +1,11 @@
 import * as StreamList from './list';
 
-export const requestData = ({ gameName = null, numResults = 20, clientId, authToken, graph1, graph2 }) => {
+export const requestData = ({ gameId = "all", numResults = 20, clientId, authToken, graph1, graph2 }) => {
   let results = {};
   
   const streams = new XMLHttpRequest();
 
-  if (gameName) {    
-    // make name into a gameId
-    let gameId = null;
+  if (gameId !== "all") {    
     streams.open('GET', 
     `https://api.twitch.tv/helix/streams?first=${numResults}&game_id=${gameId}`);
   } else {
@@ -28,8 +26,9 @@ export const requestData = ({ gameName = null, numResults = 20, clientId, authTo
         results["streamData"] = streams.response.data; 
 
         results["games"] = {};
+        results["gameIds"] = [];
         results["users"] = {};
-        results["userIds"] = []
+        results["userIds"] = [];
         results["viewerCounts"] = [];
         results["titles"] = [];
 
@@ -42,6 +41,9 @@ export const requestData = ({ gameName = null, numResults = 20, clientId, authTo
             if (obj.game_id === "") {
               results.games[obj.game_id]["name"] = "Untitled";
             }
+          }
+          if (!results.gameIds.includes(obj.game_id)) {
+            results.gameIds.push(obj.game_id);
           }
           results.users[obj.user_id] = {};
           if (!results.userIds.includes(obj.user_id)) {
@@ -99,6 +101,9 @@ export const requestData = ({ gameName = null, numResults = 20, clientId, authTo
                     graph2(viewerData, results.users);
 
                     StreamList.makeStreamerList(results.users, results.userIds);
+                    if (gameId === "all") {
+                      StreamList.makeGameOptions(results.games, results.gameIds);                      
+                    }
 
                     console.log(results);
                     console.log(Object.values(results.users));

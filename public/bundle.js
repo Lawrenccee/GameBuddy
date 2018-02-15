@@ -9542,9 +9542,6 @@ document.addEventListener("DOMContentLoaded", function () {
     var graph1Div = document.getElementById("graph1");
     var graph2Div = document.getElementById("graph2");
 
-    console.log(graph1Div.firstChild);
-    console.log(graph2Div.firstChild);
-
     while (graph1Div.firstChild) {
       graph1Div.removeChild(graph1Div.firstChild);
     }
@@ -9558,6 +9555,7 @@ document.addEventListener("DOMContentLoaded", function () {
       authToken: '55e4vzxtb1gy43imdu9n3t9nwlir01',
       graph1: graph1,
       graph2: graph2,
+      gameId: data["gameId"],
       numResults: data["numResults"] // put zero it breaks ahh
     });
   });
@@ -9582,8 +9580,8 @@ var StreamList = _interopRequireWildcard(_list);
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 var requestData = exports.requestData = function requestData(_ref) {
-  var _ref$gameName = _ref.gameName,
-      gameName = _ref$gameName === undefined ? null : _ref$gameName,
+  var _ref$gameId = _ref.gameId,
+      gameId = _ref$gameId === undefined ? "all" : _ref$gameId,
       _ref$numResults = _ref.numResults,
       numResults = _ref$numResults === undefined ? 20 : _ref$numResults,
       clientId = _ref.clientId,
@@ -9595,17 +9593,15 @@ var requestData = exports.requestData = function requestData(_ref) {
 
   var streams = new XMLHttpRequest();
 
-  if (gameName) {
-    // make name into a gameId
-    var gameId = null;
-    streams.open('GET', 'https://api.twitch.tv/helix/streams?first=' + numResults + '&game_id=' + gameId);
+  if (gameId !== "all") {
+    streams.open('GET', "https://api.twitch.tv/helix/streams?first=" + numResults + "&game_id=" + gameId);
   } else {
-    streams.open('GET', 'https://api.twitch.tv/helix/streams?first=' + numResults);
+    streams.open('GET', "https://api.twitch.tv/helix/streams?first=" + numResults);
   }
 
   streams.responseType = 'json';
   streams.setRequestHeader('Client-ID', clientId);
-  streams.setRequestHeader('Authorization', 'Bearer ' + authToken);
+  streams.setRequestHeader('Authorization', "Bearer " + authToken);
   streams.send(null);
 
   streams.onreadystatechange = function () {
@@ -9616,6 +9612,7 @@ var requestData = exports.requestData = function requestData(_ref) {
         results["streamData"] = streams.response.data;
 
         results["games"] = {};
+        results["gameIds"] = [];
         results["users"] = {};
         results["userIds"] = [];
         results["viewerCounts"] = [];
@@ -9630,6 +9627,9 @@ var requestData = exports.requestData = function requestData(_ref) {
             if (obj.game_id === "") {
               results.games[obj.game_id]["name"] = "Untitled";
             }
+          }
+          if (!results.gameIds.includes(obj.game_id)) {
+            results.gameIds.push(obj.game_id);
           }
           results.users[obj.user_id] = {};
           if (!results.userIds.includes(obj.user_id)) {
@@ -9647,10 +9647,10 @@ var requestData = exports.requestData = function requestData(_ref) {
         var gameIds = Object.keys(results.games);
 
         var games = new XMLHttpRequest();
-        games.open('GET', 'https://api.twitch.tv/helix/games?id=' + gameIds.join('&id='));
+        games.open('GET', "https://api.twitch.tv/helix/games?id=" + gameIds.join('&id='));
         games.responseType = 'json';
-        games.setRequestHeader('Client-ID', '' + clientId);
-        games.setRequestHeader('Authorization', 'Bearer ' + authToken);
+        games.setRequestHeader('Client-ID', "" + clientId);
+        games.setRequestHeader('Authorization', "Bearer " + authToken);
         games.send(null);
 
         games.onreadystatechange = function () {
@@ -9664,10 +9664,10 @@ var requestData = exports.requestData = function requestData(_ref) {
               // USER DATA
 
               var users = new XMLHttpRequest();
-              users.open('GET', 'https://api.twitch.tv/helix/users?id=' + results.userIds.join('&id='));
+              users.open('GET', "https://api.twitch.tv/helix/users?id=" + results.userIds.join('&id='));
               users.responseType = 'json';
-              users.setRequestHeader('Client-ID', '' + clientId);
-              users.setRequestHeader('Authorization', 'Bearer ' + authToken);
+              users.setRequestHeader('Client-ID', "" + clientId);
+              users.setRequestHeader('Authorization', "Bearer " + authToken);
               users.send(null);
 
               users.onreadystatechange = function () {
@@ -9687,6 +9687,9 @@ var requestData = exports.requestData = function requestData(_ref) {
                     graph2(viewerData, results.users);
 
                     StreamList.makeStreamerList(results.users, results.userIds);
+                    if (gameId === "all") {
+                      StreamList.makeGameOptions(results.games, results.gameIds);
+                    }
 
                     console.log(results);
                     console.log(Object.values(results.users));
@@ -9702,7 +9705,7 @@ var requestData = exports.requestData = function requestData(_ref) {
         };
       }
     } else {
-      console.log('Error ' + streams.status);
+      console.log("Error " + streams.status);
     }
   };
 };
@@ -23668,6 +23671,31 @@ var makeStreamerList = exports.makeStreamerList = function makeStreamerList(user
       li.appendChild(anchor);
       streamList.appendChild(li);
     }
+  });
+};
+
+var makeGameOptions = exports.makeGameOptions = function makeGameOptions(games, gameOrder) {
+  var gameOptions = document.getElementById("game-options");
+
+  while (gameOptions.firstChild) {
+    gameOptions.removeChild(gameOptions.firstChild);
+  }
+
+  var allStreams = document.createElement("option");
+
+  allStreams.value = "all";
+  allStreams.innerHTML = "--All Streams--";
+  allStreams.selected = "selected";
+
+  gameOptions.appendChild(allStreams);
+
+  gameOrder.forEach(function (gameId) {
+    var option = document.createElement("option");
+
+    option.value = gameId;
+    option.innerHTML = "" + games[gameId].name;
+
+    gameOptions.appendChild(option);
   });
 };
 
