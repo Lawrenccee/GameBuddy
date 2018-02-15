@@ -94,19 +94,28 @@ export const requestData = ({ gameId = "all", numResults = 20, clientId, authTok
                       results.users[user.id]["profileImageUrl"] = user.profile_image_url;
                     });
 
-                    let gameData = Object.values(results.games);
-                    graph1(gameData);
-
-                    let viewerData = Object.values(results.streamData);
-                    graph2(viewerData, results.users);
+                    let graph1Container = document.getElementById("graph1-container");                    
+                    let graph2Element = document.getElementById("graph2");      
+                    let gameArt = document.getElementById("game-art");          
 
                     StreamList.makeStreamerList(results.users, results.userIds);
                     if (gameId === "all") {
+                      let gameData = Object.values(results.games);
+                      gameArt.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Twitch_logo_%28wordmark_only%29.svg/1200px-Twitch_logo_%28wordmark_only%29.svg.png";
+                      graph2Element.style.height = "50%";
+                      graph1Container.style.display = "flex";                      
+                      graph1(gameData);
                       StreamList.makeGameOptions(results.games, results.gameIds);                      
+                    } else {
+                      console.log(results.games);
+                      let artSrc = Object.values(results.games)[0].boxArtUrl.replace('-{width}x{height}', '');
+                      gameArt.src = artSrc;                      
+                      graph2Element.style.height = "70%";
+                      graph1Container.style.display = "none";
                     }
 
-                    console.log(results);
-                    console.log(Object.values(results.users));
+                    let viewerData = Object.values(results.streamData);
+                    graph2(viewerData, results.users);
                   }
                 } else {
                   console.log('Error: ' + users.status); // An error occurred during the request.

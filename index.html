@@ -6,6 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
   <link rel="shortcut icon" href="">
+  <link href="https://fonts.googleapis.com/css?family=Bree+Serif" rel="stylesheet">
   <link rel="stylesheet" href="../public/stylesheets/graph.css">
   <script type="application/javascript" src="./public/bundle.js"></script>
 
@@ -22,18 +23,16 @@
     <form class="query-form" id="query-form">
       <label for="">Graph 1 Type:
         <select required name="graph1" id="graph1-type">
-          <option value="" selected disabled hidden>--Graph 1 Type--</option>
           <option value="bar">Bar Graph</option>
-          <option value="pie">Doughnut Chart</option>
+          <option selected value="pie">Doughnut Chart</option>
           <option value="bubble">Bubble Graph</option>
         </select>
       </label>
       <label for="">Graph 2 Type:
         <select required name="graph2" id="graph2-type">
-          <option value="" selected disabled hidden>--Graph 2 Type--</option>
           <option value="bar">Bar Graph</option>
           <option value="pie">Doughnut Chart</option>
-          <option value="bubble">Bubble Graph</option>
+          <option selected value="bubble">Bubble Graph</option>
         </select>
       </label>
       <label for="">Game: 
@@ -48,17 +47,21 @@
     </form>
   </div>
   <div class="main-container">
-    <div class="graph1-container">
+    <div class="graph1-container" id="graph1-container">
       <h1>Game Distribution</h1>
       <div id="graph1">
       </div>
     </div>
-    <div class="graph2-container">
+    <div class="graph2-container"  id="graph2-container">
       <h1>Views Distribution</h1>
       <div id="graph2">
       </div>
     </div>
     <div class="news-list-container">
+      <img 
+        id="game-art"
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Twitch_logo_%28wordmark_only%29.svg/1200px-Twitch_logo_%28wordmark_only%29.svg.png">
+      </img>
       <h1>Streamer List</h1>
       <div class="stream-list-container">
         <ol class="stream-list" id="stream-list">

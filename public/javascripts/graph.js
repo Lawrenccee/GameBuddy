@@ -76,7 +76,7 @@ export const makeGameBarGraph = (data) => {
   });
 
   bar.on("mousemove", function (d) {
-    tooltip.style("top", (d3.event.layerY + 10) + "px")
+    tooltip.style("top", (d3.event.layerY - 175) + "px")
       .style("left", (d3.event.layerX + 10) + "px");
   });
 };
@@ -143,7 +143,7 @@ export const makeGamePieChart = (data) => {
   });
 
   path.on("mousemove", function (d) {
-    tooltip.style("top", (d3.event.layerY + 10) + "px")
+    tooltip.style("top", (d3.event.layerY - 175) + "px")
       .style("left", (d3.event.layerX + 10) + "px");
   });
 };
@@ -213,7 +213,7 @@ export const makeGameBubbleGraph = (data) => {
   });
 
   bubbles.on("mousemove", function (d) {
-    tooltip.style("top", (d3.event.layerY + 10) + "px")
+    tooltip.style("top", (d3.event.layerY - 175) + "px")
       .style("left", (d3.event.layerX + 10) + "px");
   });
 };
@@ -284,7 +284,7 @@ export const makeViewerPieChart = (data, users) => {
   });
 
   path.on("mousemove", function (d) {
-    tooltip.style("top", (d3.event.layerY + 10) + "px")
+    tooltip.style("top", (d3.event.layerY - 175) + "px")
       .style("left", (d3.event.layerX + 10) + "px");
   });
 };
@@ -368,7 +368,7 @@ export const makeViewerBarGraph = (data, users) => {
   });
 
   bar.on("mousemove", function (d) {
-    tooltip.style("top", (d3.event.layerY + 10) + "px")
+    tooltip.style("top", (d3.event.layerY - 175) + "px")
       .style("left", (d3.event.layerX + 10) + "px");
   });
 };
@@ -442,7 +442,7 @@ export const makeViewerBubbleGraph = (data, users) => {
   });
 
   bubbles.on("mousemove", function (d) {
-    tooltip.style("top", (d3.event.layerY + 10) + "px")
+    tooltip.style("top", (d3.event.layerY - 175) + "px")
       .style("left", (d3.event.layerX + 10) + "px");
   });
 };

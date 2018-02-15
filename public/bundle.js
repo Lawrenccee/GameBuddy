@@ -9681,19 +9681,28 @@ var requestData = exports.requestData = function requestData(_ref) {
                       results.users[user.id]["profileImageUrl"] = user.profile_image_url;
                     });
 
-                    var gameData = Object.values(results.games);
-                    graph1(gameData);
-
-                    var viewerData = Object.values(results.streamData);
-                    graph2(viewerData, results.users);
+                    var graph1Container = document.getElementById("graph1-container");
+                    var graph2Element = document.getElementById("graph2");
+                    var gameArt = document.getElementById("game-art");
 
                     StreamList.makeStreamerList(results.users, results.userIds);
                     if (gameId === "all") {
+                      var gameData = Object.values(results.games);
+                      gameArt.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Twitch_logo_%28wordmark_only%29.svg/1200px-Twitch_logo_%28wordmark_only%29.svg.png";
+                      graph2Element.style.height = "50%";
+                      graph1Container.style.display = "flex";
+                      graph1(gameData);
                       StreamList.makeGameOptions(results.games, results.gameIds);
+                    } else {
+                      console.log(results.games);
+                      var artSrc = Object.values(results.games)[0].boxArtUrl.replace('-{width}x{height}', '');
+                      gameArt.src = artSrc;
+                      graph2Element.style.height = "70%";
+                      graph1Container.style.display = "none";
                     }
 
-                    console.log(results);
-                    console.log(Object.values(results.users));
+                    var viewerData = Object.values(results.streamData);
+                    graph2(viewerData, results.users);
                   }
                 } else {
                   console.log('Error: ' + users.status); // An error occurred during the request.
@@ -9787,7 +9796,7 @@ var makeGameBarGraph = exports.makeGameBarGraph = function makeGameBarGraph(data
   });
 
   bar.on("mousemove", function (d) {
-    tooltip.style("top", d3.event.layerY + 10 + "px").style("left", d3.event.layerX + 10 + "px");
+    tooltip.style("top", d3.event.layerY - 175 + "px").style("left", d3.event.layerX + 10 + "px");
   });
 };
 
@@ -9836,7 +9845,7 @@ var makeGamePieChart = exports.makeGamePieChart = function makeGamePieChart(data
   });
 
   path.on("mousemove", function (d) {
-    tooltip.style("top", d3.event.layerY + 10 + "px").style("left", d3.event.layerX + 10 + "px");
+    tooltip.style("top", d3.event.layerY - 175 + "px").style("left", d3.event.layerX + 10 + "px");
   });
 };
 
@@ -9895,7 +9904,7 @@ var makeGameBubbleGraph = exports.makeGameBubbleGraph = function makeGameBubbleG
   });
 
   bubbles.on("mousemove", function (d) {
-    tooltip.style("top", d3.event.layerY + 10 + "px").style("left", d3.event.layerX + 10 + "px");
+    tooltip.style("top", d3.event.layerY - 175 + "px").style("left", d3.event.layerX + 10 + "px");
   });
 };
 
@@ -9947,7 +9956,7 @@ var makeViewerPieChart = exports.makeViewerPieChart = function makeViewerPieChar
   });
 
   path.on("mousemove", function (d) {
-    tooltip.style("top", d3.event.layerY + 10 + "px").style("left", d3.event.layerX + 10 + "px");
+    tooltip.style("top", d3.event.layerY - 175 + "px").style("left", d3.event.layerX + 10 + "px");
   });
 };
 
@@ -10011,7 +10020,7 @@ var makeViewerBarGraph = exports.makeViewerBarGraph = function makeViewerBarGrap
   });
 
   bar.on("mousemove", function (d) {
-    tooltip.style("top", d3.event.layerY + 10 + "px").style("left", d3.event.layerX + 10 + "px");
+    tooltip.style("top", d3.event.layerY - 175 + "px").style("left", d3.event.layerX + 10 + "px");
   });
 };
 
@@ -10073,7 +10082,7 @@ var makeViewerBubbleGraph = exports.makeViewerBubbleGraph = function makeViewerB
   });
 
   bubbles.on("mousemove", function (d) {
-    tooltip.style("top", d3.event.layerY + 10 + "px").style("left", d3.event.layerX + 10 + "px");
+    tooltip.style("top", d3.event.layerY - 175 + "px").style("left", d3.event.layerX + 10 + "px");
   });
 };
 
