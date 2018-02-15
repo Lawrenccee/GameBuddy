@@ -12,6 +12,24 @@
   <title>GameBuddy</title>
 </head>
 <body>
+  <div class="query-container">
+    <form class="query-form" id="query-form">
+      <select required name="graph1" id="graph1-type">
+        <option value="" selected disabled hidden>--Graph 1 Type--</option>
+        <option value="bar">Bar Graph</option>
+        <option value="pie">Doughnut Chart</option>
+        <option value="bubble">Bubble Graph</option>
+      </select>
+      <select required name="graph2" id="graph2-type">
+        <option value="" selected disabled hidden>--Graph 2 Type--</option>
+        <option value="bar">Bar Graph</option>
+        <option value="pie">Doughnut Chart</option>
+        <option value="bubble">Bubble Graph</option>
+      </select>
+      <input type="number" name="numResults" min="1" max="100" value="20">
+      <input type="submit">
+    </form>
+  </div>
   <div class="main-container">
     <div class="graph1-container">
       <div id="graph1">

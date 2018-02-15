@@ -65,9 +65,9 @@ export const makeGameBarGraph = (data) => {
     }));
 
     let percent = Math.round(1000 * d.count / totalCounts) / 10;
-    tooltip.select(".name").html(d.name);
-    tooltip.select(".count").html(d.count);
-    tooltip.select(".percent").html(`${percent}%`);
+    tooltip.select(".name").html(`<p>Game:</p> ${d.data.name}`);
+    tooltip.select(".count").html(`<p>Count:</p> ${d.data.count}`);
+    tooltip.select(".percent").html(`<p>Percent of Total:</p> ${percent}%`);
     tooltip.style("display", "block");
   });
 
@@ -132,9 +132,9 @@ export const makeGamePieChart = (data) => {
     }));
 
     let percent = Math.round(1000 * d.data.count / totalCounts) / 10;
-    tooltip.select(".name").html(d.data.name);
-    tooltip.select(".count").html(d.data.count);
-    tooltip.select(".percent").html(`${percent}%`);
+    tooltip.select(".name").html(`<p>Game:</p> ${d.data.name}`);
+    tooltip.select(".count").html(`<p>Count:</p> ${d.data.count}`);
+    tooltip.select(".percent").html(`<p>Percent of Total:</p> ${percent}%`);
     tooltip.style("display", "block");
   });
 
@@ -202,9 +202,9 @@ export const makeGameBubbleGraph = (data) => {
     }));
 
     let percent = Math.round(1000 * d.data.count / totalCounts) / 10;
-    tooltip.select(".name").html(d.data.name);
-    tooltip.select(".count").html(d.data.count);
-    tooltip.select(".percent").html(`${percent}%`);
+    tooltip.select(".name").html(`<p>Game:</p> ${d.data.name}`);
+    tooltip.select(".count").html(`<p>Count:</p> ${d.data.count}`);
+    tooltip.select(".percent").html(`<p>Percent of Total:</p> ${percent}%`);
     tooltip.style("display", "block");
   });
 
@@ -218,7 +218,7 @@ export const makeGameBubbleGraph = (data) => {
   });
 };
 
-export const makeViewerPieChart = (data) => {
+export const makeViewerPieChart = (data, users) => {
   let dims = d3.select("#graph2").node().getBoundingClientRect();
   let height = dims.height;
   let width = dims.width;
@@ -255,6 +255,9 @@ export const makeViewerPieChart = (data) => {
     .attr("class", "tooltip");
 
   tooltip.append("div")
+    .attr("class", "streamer");
+
+  tooltip.append("div")
     .attr("class", "title");
 
   tooltip.append("div")
@@ -269,9 +272,10 @@ export const makeViewerPieChart = (data) => {
     }));
 
     let percent = Math.round(1000 * d.data.viewer_count / totalViews) / 10;
-    tooltip.select(".title").html(d.data.title);
-    tooltip.select(".viewer-count").html(d.data.viewer_count);
-    tooltip.select(".percent").html(`${percent}%`);
+    tooltip.select(".streamer").html(`<p>Streamer:</p> ${users[d.data.user_id].displayName}`);
+    tooltip.select(".title").html(`<p>Title:</p> ${d.data.title}`);
+    tooltip.select(".viewer-count").html(`<p>People Watching:</p> ${d.data.viewer_count}`);
+    tooltip.select(".percent").html(`<p>Percent of Total:</p> ${percent}%`);
     tooltip.style("display", "block");
   });
 
@@ -285,7 +289,7 @@ export const makeViewerPieChart = (data) => {
   });
 };
 
-export const makeViewerBarGraph = (data) => {
+export const makeViewerBarGraph = (data, users) => {
   let dims = d3.select("#graph2").node().getBoundingClientRect();
   let height = dims.height;
   let width = dims.width;
@@ -335,6 +339,9 @@ export const makeViewerBarGraph = (data) => {
     .attr("class", "tooltip");
 
   tooltip.append("div")
+    .attr("class", "streamer");
+
+  tooltip.append("div")
     .attr("class", "title");
 
   tooltip.append("div")
@@ -349,9 +356,10 @@ export const makeViewerBarGraph = (data) => {
     }));
 
     let percent = Math.round(1000 * d.viewer_count / totalViews) / 10;
-    tooltip.select(".title").html(d.title);
-    tooltip.select(".viewer-count").html(d.viewer_count);
-    tooltip.select(".percent").html(`${percent}%`);
+    tooltip.select(".streamer").html(`<p>Streamer:</p> ${users[d.user_id].displayName}`);    
+    tooltip.select(".title").html(`<p>Title:</p> ${d.title}`);
+    tooltip.select(".viewer-count").html(`<p>People Watching:</p> ${d.viewer_count}`);
+    tooltip.select(".percent").html(`<p>Percent of Total:</p> ${percent}%`);
     tooltip.style("display", "block");
   });
 
@@ -365,7 +373,7 @@ export const makeViewerBarGraph = (data) => {
   });
 };
 
-export const makeViewerBubbleGraph = (data) => {
+export const makeViewerBubbleGraph = (data, users) => {
   let dims = d3.select("#graph2").node().getBoundingClientRect();
   let height = dims.height;
   let width = dims.width;
@@ -405,6 +413,9 @@ export const makeViewerBubbleGraph = (data) => {
     .attr("class", "tooltip");
 
   tooltip.append("div")
+    .attr("class", "streamer");
+
+  tooltip.append("div")
     .attr("class", "title");
 
   tooltip.append("div")
@@ -419,9 +430,10 @@ export const makeViewerBubbleGraph = (data) => {
     }));
 
     let percent = Math.round(1000 * d.data.viewer_count / totalViews) / 10;
-    tooltip.select(".title").html(d.data.title);
-    tooltip.select(".viewer-count").html(d.data.viewer_count);
-    tooltip.select(".percent").html(`${percent}%`);
+    tooltip.select(".streamer").html(`<p>Streamer:</p> ${users[d.data.user_id].displayName}`);    
+    tooltip.select(".title").html(`<p>Title:</p> ${d.data.title}`);
+    tooltip.select(".viewer-count").html(`<p>People Watching:</p> ${d.data.viewer_count}`);
+    tooltip.select(".percent").html(`<p>Percent of Total:</p> ${percent}%`);
     tooltip.style("display", "block");
   });
 

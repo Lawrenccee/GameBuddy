@@ -48,9 +48,13 @@ body {
   padding: 10px;
   position: absolute;
   text-align: center;
-  width: 80px;
+  width: 150px;
   word-break: break-word;
   z-index: 10;
+}
+
+.tooltip p {
+  font-weight: 700;
 }
 
 .stream-list-container {

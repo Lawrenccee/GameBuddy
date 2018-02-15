@@ -29,6 +29,7 @@ export const requestData = ({ gameName = null, numResults = 20, clientId, authTo
 
         results["games"] = {};
         results["users"] = {};
+        results["userIds"] = []
         results["viewerCounts"] = [];
         results["titles"] = [];
 
@@ -43,6 +44,9 @@ export const requestData = ({ gameName = null, numResults = 20, clientId, authTo
             }
           }
           results.users[obj.user_id] = {};
+          if (!results.userIds.includes(obj.user_id)) {
+            results.userIds.push(obj.user_id);
+          }
           if (!results.viewerCounts.includes(obj.viewer_count)) {
             results.viewerCounts.push(obj.viewer_count);
           }
@@ -70,10 +74,9 @@ export const requestData = ({ gameName = null, numResults = 20, clientId, authTo
               });
 
               // USER DATA
-              let userIds = Object.keys(results.users);
 
               const users = new XMLHttpRequest();
-              users.open('GET', `https://api.twitch.tv/helix/users?id=${userIds.join('&id=')}`);
+              users.open('GET', `https://api.twitch.tv/helix/users?id=${results.userIds.join('&id=')}`);
               users.responseType = 'json';
               users.setRequestHeader('Client-ID', `${clientId}`);
               users.setRequestHeader('Authorization', `Bearer ${authToken}`);
@@ -93,9 +96,9 @@ export const requestData = ({ gameName = null, numResults = 20, clientId, authTo
                     graph1(gameData);
 
                     let viewerData = Object.values(results.streamData);
-                    graph2(viewerData);
+                    graph2(viewerData, results.users);
 
-                    StreamList.makeStreamerList(Object.values(results.users));
+                    StreamList.makeStreamerList(results.users, results.userIds);
 
                     console.log(results);
                     console.log(Object.values(results.users));

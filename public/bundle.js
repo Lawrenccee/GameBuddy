@@ -9455,6 +9455,8 @@ function transform(node) {
 "use strict";
 
 
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
 var _twitch_api_util = __webpack_require__(173);
 
 var TwitchApi = _interopRequireWildcard(_twitch_api_util);
@@ -9465,12 +9467,100 @@ var Graph = _interopRequireWildcard(_graph);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-var results = TwitchApi.requestData({
-  clientId: 'xs37hj3ec9i8585sig0axgc7u60t74',
-  authToken: '55e4vzxtb1gy43imdu9n3t9nwlir01',
-  graph1: Graph.makeGamePieChart,
-  graph2: Graph.makeViewerBubbleGraph,
-  numResults: 100 // put zero it breaks ahh
+document.addEventListener("DOMContentLoaded", function () {
+  var results = TwitchApi.requestData({
+    clientId: 'xs37hj3ec9i8585sig0axgc7u60t74',
+    authToken: '55e4vzxtb1gy43imdu9n3t9nwlir01',
+    graph1: Graph.makeGamePieChart,
+    graph2: Graph.makeViewerBubbleGraph,
+    numResults: 100 // put zero it breaks ahh
+  });
+
+  var queryForm = document.getElementById("query-form");
+  queryForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var data = {};
+
+    var formData = new FormData(queryForm);
+    var _iteratorNormalCompletion = true;
+    var _didIteratorError = false;
+    var _iteratorError = undefined;
+
+    try {
+      for (var _iterator = formData.entries()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+        var _ref = _step.value;
+
+        var _ref2 = _slicedToArray(_ref, 2);
+
+        var key = _ref2[0];
+        var value = _ref2[1];
+
+        data[key] = value;
+      }
+    } catch (err) {
+      _didIteratorError = true;
+      _iteratorError = err;
+    } finally {
+      try {
+        if (!_iteratorNormalCompletion && _iterator.return) {
+          _iterator.return();
+        }
+      } finally {
+        if (_didIteratorError) {
+          throw _iteratorError;
+        }
+      }
+    }
+
+    var graph1 = void 0;
+    var graph2 = void 0;
+
+    switch (data["graph1"]) {
+      case "bar":
+        graph1 = Graph.makeGameBarGraph;
+        break;
+      case "pie":
+        graph1 = Graph.makeGamePieChart;
+        break;
+      case "bubble":
+        graph1 = Graph.makeGameBubbleGraph;
+        break;
+    }
+
+    switch (data["graph2"]) {
+      case "bar":
+        graph2 = Graph.makeViewerBarGraph;
+        break;
+      case "pie":
+        graph2 = Graph.makeViewerPieChart;
+        break;
+      case "bubble":
+        graph2 = Graph.makeViewerBubbleGraph;
+        break;
+    }
+
+    var graph1Div = document.getElementById("graph1");
+    var graph2Div = document.getElementById("graph2");
+
+    console.log(graph1Div.firstChild);
+    console.log(graph2Div.firstChild);
+
+    while (graph1Div.firstChild) {
+      graph1Div.removeChild(graph1Div.firstChild);
+    }
+
+    while (graph2Div.firstChild) {
+      graph2Div.removeChild(graph2Div.firstChild);
+    }
+
+    TwitchApi.requestData({
+      clientId: 'xs37hj3ec9i8585sig0axgc7u60t74',
+      authToken: '55e4vzxtb1gy43imdu9n3t9nwlir01',
+      graph1: graph1,
+      graph2: graph2,
+      numResults: data["numResults"] // put zero it breaks ahh
+    });
+  });
 });
 
 /***/ }),
@@ -9527,6 +9617,7 @@ var requestData = exports.requestData = function requestData(_ref) {
 
         results["games"] = {};
         results["users"] = {};
+        results["userIds"] = [];
         results["viewerCounts"] = [];
         results["titles"] = [];
 
@@ -9541,6 +9632,9 @@ var requestData = exports.requestData = function requestData(_ref) {
             }
           }
           results.users[obj.user_id] = {};
+          if (!results.userIds.includes(obj.user_id)) {
+            results.userIds.push(obj.user_id);
+          }
           if (!results.viewerCounts.includes(obj.viewer_count)) {
             results.viewerCounts.push(obj.viewer_count);
           }
@@ -9568,10 +9662,9 @@ var requestData = exports.requestData = function requestData(_ref) {
               });
 
               // USER DATA
-              var userIds = Object.keys(results.users);
 
               var users = new XMLHttpRequest();
-              users.open('GET', 'https://api.twitch.tv/helix/users?id=' + userIds.join('&id='));
+              users.open('GET', 'https://api.twitch.tv/helix/users?id=' + results.userIds.join('&id='));
               users.responseType = 'json';
               users.setRequestHeader('Client-ID', '' + clientId);
               users.setRequestHeader('Authorization', 'Bearer ' + authToken);
@@ -9591,9 +9684,9 @@ var requestData = exports.requestData = function requestData(_ref) {
                     graph1(gameData);
 
                     var viewerData = Object.values(results.streamData);
-                    graph2(viewerData);
+                    graph2(viewerData, results.users);
 
-                    StreamList.makeStreamerList(Object.values(results.users));
+                    StreamList.makeStreamerList(results.users, results.userIds);
 
                     console.log(results);
                     console.log(Object.values(results.users));
@@ -9679,9 +9772,9 @@ var makeGameBarGraph = exports.makeGameBarGraph = function makeGameBarGraph(data
     }));
 
     var percent = Math.round(1000 * d.count / totalCounts) / 10;
-    tooltip.select(".name").html(d.name);
-    tooltip.select(".count").html(d.count);
-    tooltip.select(".percent").html(percent + "%");
+    tooltip.select(".name").html("<p>Game:</p> " + d.data.name);
+    tooltip.select(".count").html("<p>Count:</p> " + d.data.count);
+    tooltip.select(".percent").html("<p>Percent of Total:</p> " + percent + "%");
     tooltip.style("display", "block");
   });
 
@@ -9728,9 +9821,9 @@ var makeGamePieChart = exports.makeGamePieChart = function makeGamePieChart(data
     }));
 
     var percent = Math.round(1000 * d.data.count / totalCounts) / 10;
-    tooltip.select(".name").html(d.data.name);
-    tooltip.select(".count").html(d.data.count);
-    tooltip.select(".percent").html(percent + "%");
+    tooltip.select(".name").html("<p>Game:</p> " + d.data.name);
+    tooltip.select(".count").html("<p>Count:</p> " + d.data.count);
+    tooltip.select(".percent").html("<p>Percent of Total:</p> " + percent + "%");
     tooltip.style("display", "block");
   });
 
@@ -9787,9 +9880,9 @@ var makeGameBubbleGraph = exports.makeGameBubbleGraph = function makeGameBubbleG
     }));
 
     var percent = Math.round(1000 * d.data.count / totalCounts) / 10;
-    tooltip.select(".name").html(d.data.name);
-    tooltip.select(".count").html(d.data.count);
-    tooltip.select(".percent").html(percent + "%");
+    tooltip.select(".name").html("<p>Game:</p> " + d.data.name);
+    tooltip.select(".count").html("<p>Count:</p> " + d.data.count);
+    tooltip.select(".percent").html("<p>Percent of Total:</p> " + percent + "%");
     tooltip.style("display", "block");
   });
 
@@ -9802,7 +9895,7 @@ var makeGameBubbleGraph = exports.makeGameBubbleGraph = function makeGameBubbleG
   });
 };
 
-var makeViewerPieChart = exports.makeViewerPieChart = function makeViewerPieChart(data) {
+var makeViewerPieChart = exports.makeViewerPieChart = function makeViewerPieChart(data, users) {
   var dims = d3.select("#graph2").node().getBoundingClientRect();
   var height = dims.height;
   var width = dims.width;
@@ -9824,6 +9917,8 @@ var makeViewerPieChart = exports.makeViewerPieChart = function makeViewerPieChar
 
   var tooltip = d3.select("#graph2").append("div").attr("class", "tooltip");
 
+  tooltip.append("div").attr("class", "streamer");
+
   tooltip.append("div").attr("class", "title");
 
   tooltip.append("div").attr("class", "viewer-count");
@@ -9836,9 +9931,10 @@ var makeViewerPieChart = exports.makeViewerPieChart = function makeViewerPieChar
     }));
 
     var percent = Math.round(1000 * d.data.viewer_count / totalViews) / 10;
-    tooltip.select(".title").html(d.data.title);
-    tooltip.select(".viewer-count").html(d.data.viewer_count);
-    tooltip.select(".percent").html(percent + "%");
+    tooltip.select(".streamer").html("<p>Streamer:</p> " + users[d.data.user_id].displayName);
+    tooltip.select(".title").html("<p>Title:</p> " + d.data.title);
+    tooltip.select(".viewer-count").html("<p>People Watching:</p> " + d.data.viewer_count);
+    tooltip.select(".percent").html("<p>Percent of Total:</p> " + percent + "%");
     tooltip.style("display", "block");
   });
 
@@ -9851,7 +9947,7 @@ var makeViewerPieChart = exports.makeViewerPieChart = function makeViewerPieChar
   });
 };
 
-var makeViewerBarGraph = exports.makeViewerBarGraph = function makeViewerBarGraph(data) {
+var makeViewerBarGraph = exports.makeViewerBarGraph = function makeViewerBarGraph(data, users) {
   var dims = d3.select("#graph2").node().getBoundingClientRect();
   var height = dims.height;
   var width = dims.width;
@@ -9885,6 +9981,8 @@ var makeViewerBarGraph = exports.makeViewerBarGraph = function makeViewerBarGrap
 
   var tooltip = d3.select("#graph2").append("div").attr("class", "tooltip");
 
+  tooltip.append("div").attr("class", "streamer");
+
   tooltip.append("div").attr("class", "title");
 
   tooltip.append("div").attr("class", "viewer-count");
@@ -9897,9 +9995,10 @@ var makeViewerBarGraph = exports.makeViewerBarGraph = function makeViewerBarGrap
     }));
 
     var percent = Math.round(1000 * d.viewer_count / totalViews) / 10;
-    tooltip.select(".title").html(d.title);
-    tooltip.select(".viewer-count").html(d.viewer_count);
-    tooltip.select(".percent").html(percent + "%");
+    tooltip.select(".streamer").html("<p>Streamer:</p> " + users[d.user_id].displayName);
+    tooltip.select(".title").html("<p>Title:</p> " + d.title);
+    tooltip.select(".viewer-count").html("<p>People Watching:</p> " + d.viewer_count);
+    tooltip.select(".percent").html("<p>Percent of Total:</p> " + percent + "%");
     tooltip.style("display", "block");
   });
 
@@ -9912,7 +10011,7 @@ var makeViewerBarGraph = exports.makeViewerBarGraph = function makeViewerBarGrap
   });
 };
 
-var makeViewerBubbleGraph = exports.makeViewerBubbleGraph = function makeViewerBubbleGraph(data) {
+var makeViewerBubbleGraph = exports.makeViewerBubbleGraph = function makeViewerBubbleGraph(data, users) {
   var dims = d3.select("#graph2").node().getBoundingClientRect();
   var height = dims.height;
   var width = dims.width;
@@ -9944,6 +10043,8 @@ var makeViewerBubbleGraph = exports.makeViewerBubbleGraph = function makeViewerB
 
   var tooltip = d3.select("#graph2").append("div").attr("class", "tooltip");
 
+  tooltip.append("div").attr("class", "streamer");
+
   tooltip.append("div").attr("class", "title");
 
   tooltip.append("div").attr("class", "viewer-count");
@@ -9956,9 +10057,10 @@ var makeViewerBubbleGraph = exports.makeViewerBubbleGraph = function makeViewerB
     }));
 
     var percent = Math.round(1000 * d.data.viewer_count / totalViews) / 10;
-    tooltip.select(".title").html(d.data.title);
-    tooltip.select(".viewer-count").html(d.data.viewer_count);
-    tooltip.select(".percent").html(percent + "%");
+    tooltip.select(".streamer").html("<p>Streamer:</p> " + users[d.data.user_id].displayName);
+    tooltip.select(".title").html("<p>Title:</p> " + d.data.title);
+    tooltip.select(".viewer-count").html("<p>People Watching:</p> " + d.data.viewer_count);
+    tooltip.select(".percent").html("<p>Percent of Total:</p> " + percent + "%");
     tooltip.style("display", "block");
   });
 
@@ -23547,21 +23649,21 @@ function nopropagation() {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var makeStreamerList = exports.makeStreamerList = function makeStreamerList(users) {
+var makeStreamerList = exports.makeStreamerList = function makeStreamerList(users, userOrder) {
   var streamList = document.getElementById("stream-list");
 
   while (streamList.firstChild) {
     streamList.removeChild(streamList.firstChild);
   }
 
-  users.forEach(function (user) {
-    if (user.login) {
+  userOrder.forEach(function (userId) {
+    if (users[userId].login) {
       var li = document.createElement("li");
       var anchor = document.createElement("a");
 
-      anchor.href = "https://twitch.tv/" + user.login;
+      anchor.href = "https://twitch.tv/" + users[userId].login;
       anchor.target = "_blank";
-      anchor.innerHTML = "" + user.displayName;
+      anchor.innerHTML = "" + users[userId].displayName;
 
       li.appendChild(anchor);
       streamList.appendChild(li);
