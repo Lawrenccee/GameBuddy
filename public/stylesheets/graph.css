@@ -1,3 +1,8 @@
+h1, h2 {
+  margin: 0;
+  padding: 0;
+}
+
 body {
   background-color: #FFF;
   height: 100vh;
@@ -13,9 +18,13 @@ body {
   height: 100vh;
   width: 30%;
   display: flex;
-  justify-content: center;
-  /* align-items: center; */
+  flex-direction: column;
+  text-align: center;
   padding: 20px;
+}
+
+.graph1-container h1, .graph2-container h1, .news-list-container h1 {
+  margin: 10px 0;
 }
 
 #graph1, #graph2 {
@@ -68,4 +77,18 @@ body {
 
 .stream-list-container a {
   color: #4C3777;
+}
+
+.query-container {
+  display: flex;
+  justify-content: center;
+}
+
+.query-container form > * {
+  margin: 10px;
+}
+
+body > h1, body > h2 {
+  text-align: center;
+  margin: 10px 0;
 }

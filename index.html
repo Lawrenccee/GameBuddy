@@ -12,37 +12,54 @@
   <title>GameBuddy</title>
 </head>
 <body>
+  <h1>
+    GameBuddy
+  </h1>
+  <h2>
+    A Data Visualization tool for Twitch streams
+  </h2>
   <div class="query-container">
     <form class="query-form" id="query-form">
-      <select required name="graph1" id="graph1-type">
-        <option value="" selected disabled hidden>--Graph 1 Type--</option>
-        <option value="bar">Bar Graph</option>
-        <option value="pie">Doughnut Chart</option>
-        <option value="bubble">Bubble Graph</option>
-      </select>
-      <select required name="graph2" id="graph2-type">
-        <option value="" selected disabled hidden>--Graph 2 Type--</option>
-        <option value="bar">Bar Graph</option>
-        <option value="pie">Doughnut Chart</option>
-        <option value="bubble">Bubble Graph</option>
-      </select>
-      <select name="gameId" id="game-options">
-        <option value="all" selected>--All Streams--</option>        
-      </select>
-      <input type="number" name="numResults" min="1" max="100" value="20">
+      <label for="">Graph 1 Type:
+        <select required name="graph1" id="graph1-type">
+          <option value="" selected disabled hidden>--Graph 1 Type--</option>
+          <option value="bar">Bar Graph</option>
+          <option value="pie">Doughnut Chart</option>
+          <option value="bubble">Bubble Graph</option>
+        </select>
+      </label>
+      <label for="">Graph 2 Type:
+        <select required name="graph2" id="graph2-type">
+          <option value="" selected disabled hidden>--Graph 2 Type--</option>
+          <option value="bar">Bar Graph</option>
+          <option value="pie">Doughnut Chart</option>
+          <option value="bubble">Bubble Graph</option>
+        </select>
+      </label>
+      <label for="">Game: 
+        <select name="gameId" id="game-options">
+          <option value="all" selected>--All Streams--</option>
+        </select>
+      </label>
+      <label for=""># of Results:
+        <input type="number" name="numResults" min="1" max="100" value="20">        
+      </label>
       <input type="submit">
     </form>
   </div>
   <div class="main-container">
     <div class="graph1-container">
+      <h1>Game Distribution</h1>
       <div id="graph1">
       </div>
     </div>
     <div class="graph2-container">
+      <h1>Views Distribution</h1>
       <div id="graph2">
       </div>
     </div>
     <div class="news-list-container">
+      <h1>Streamer List</h1>
       <div class="stream-list-container">
         <ol class="stream-list" id="stream-list">
         </ol>
