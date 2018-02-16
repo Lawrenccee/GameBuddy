@@ -14,14 +14,14 @@ body {
   position: relative;
 }
 
-.title {
+.title-headers {
   display: flex;
   justify-content: center;
   align-items: center;
   margin: 10px;
 }
 
-.title p {
+.title-headers p {
   margin: 0 5px;
 }
 
@@ -121,7 +121,7 @@ body {
 }
 
 .query-container form > * {
-  margin: 10px;
+  margin: 5px;
 }
 
 body > h1, body > h2 {

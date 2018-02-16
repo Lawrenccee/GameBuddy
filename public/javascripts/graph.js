@@ -70,7 +70,8 @@ export const makeGameBarGraph = (data) => {
     tooltip.select(".percent").html(`<p>Percent of Total:</p> ${percent}%`);
     tooltip.style("display", "block");
 
-    d3.select(this).select("rect")
+    d3.select(this).select("rect").transition()
+      .duration("500")
       .attr("height", 3 * barHeight)
       .attr("width", scale(d.count) + 10)
       .attr("fill-opacity", 0.7);
@@ -78,7 +79,8 @@ export const makeGameBarGraph = (data) => {
 
   bar.on("mouseout", function (d) {
     tooltip.style("display", "none");
-    d3.select(this).select("rect")
+    d3.select(this).select("rect").transition()
+      .duration("500")
       .attr("height", barHeight)
       .attr("width", scale(d.count))
       .attr("fill-opacity", 1.0);
@@ -150,7 +152,8 @@ export const makeGamePieChart = (data) => {
     tooltip.select(".percent").html(`<p>Percent of Total:</p> ${percent}%`);
     tooltip.style("display", "block");
 
-    d3.select(this)
+    d3.select(this).transition()
+      .duration("500")
       .attr("d", overArc)
       .attr("fill-opacity", 0.7);
   });
@@ -158,7 +161,8 @@ export const makeGamePieChart = (data) => {
   path.on("mouseout", function (d) {
     tooltip.style("display", "none");
 
-    d3.select(this)
+    d3.select(this).transition()
+      .duration("500")
       .attr("d", arc)
       .attr("fill-opacity", 1.0);
   });
@@ -306,12 +310,13 @@ export const makeViewerPieChart = (data, users) => {
 
     let percent = Math.round(1000 * d.data.viewer_count / totalViews) / 10;
     tooltip.select(".streamer").html(`<p>Streamer:</p> ${users[d.data.user_id].displayName}`);
-    tooltip.select(".title").html(`<p>Title:</p> ${d.data.title}`);
+    tooltip.select(".title").html(`<br> <br> ${d.data.title}`);
     tooltip.select(".viewer-count").html(`<p>People Watching:</p> ${d.data.viewer_count}`);
     tooltip.select(".percent").html(`<p>Percent of Total:</p> ${percent}%`);
     tooltip.style("display", "block");
 
-    d3.select(this)
+    d3.select(this).transition()
+      .duration("500")
       .attr("d", overArc)
       .attr("opacity", 0.7);
   });
@@ -319,7 +324,8 @@ export const makeViewerPieChart = (data, users) => {
   path.on("mouseout", function (d) {
     tooltip.style("display", "none");
 
-    d3.select(this)
+    d3.select(this).transition()
+      .duration("500")
       .attr("d", arc)
       .attr("opacity", 1.0);
   });
@@ -398,12 +404,13 @@ export const makeViewerBarGraph = (data, users) => {
 
     let percent = Math.round(1000 * d.viewer_count / totalViews) / 10;
     tooltip.select(".streamer").html(`<p>Streamer:</p> ${users[d.user_id].displayName}`);    
-    tooltip.select(".title").html(`<p>Title:</p> ${d.title}`);
+    tooltip.select(".title").html(`<p>Title:</p> <br> ${d.title}`);
     tooltip.select(".viewer-count").html(`<p>People Watching:</p> ${d.viewer_count}`);
     tooltip.select(".percent").html(`<p>Percent of Total:</p> ${percent}%`);
     tooltip.style("display", "block");
 
-    d3.select(this).select("rect")
+    d3.select(this).select("rect").transition()
+      .duration("500")
       .attr("height", 3 * barHeight)
       .attr("width", scale(d.viewer_count / 1000) + 10)
       .attr("fill-opacity", 0.7);
@@ -412,7 +419,8 @@ export const makeViewerBarGraph = (data, users) => {
   bar.on("mouseout", function (d) {
     tooltip.style("display", "none");
 
-    d3.select(this).select("rect")
+    d3.select(this).select("rect").transition()
+      .duration("500")
       .attr("height", barHeight)
       .attr("width", scale(d.viewer_count / 1000))      
       .attr("fill-opacity", 1.0);
@@ -482,7 +490,7 @@ export const makeViewerBubbleGraph = (data, users) => {
 
     let percent = Math.round(1000 * d.data.viewer_count / totalViews) / 10;
     tooltip.select(".streamer").html(`<p>Streamer:</p> ${users[d.data.user_id].displayName}`);    
-    tooltip.select(".title").html(`<p>Title:</p> ${d.data.title}`);
+    tooltip.select(".title").html(`<br> <br> ${d.data.title}`);
     tooltip.select(".viewer-count").html(`<p>People Watching:</p> ${d.data.viewer_count}`);
     tooltip.select(".percent").html(`<p>Percent of Total:</p> ${percent}%`);
     tooltip.style("display", "block");

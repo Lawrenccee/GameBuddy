@@ -96,18 +96,24 @@ export const requestData = ({ gameId = "all", numResults = 20, clientId, authTok
 
                     let graph1Container = document.getElementById("graph1-container");                    
                     let graph2Element = document.getElementById("graph2");      
-                    let gameArt = document.getElementById("game-art");          
+                    let gameArt = document.getElementById("game-art");  
+                    document.removeChild(gameArt);
+                    let newArt = document.createElement("img");
+                    newArt.id = "game-art";
+                    let newsHeader = document.getElementById("newsHeader");
 
                     StreamList.makeStreamerList(results.users, results.userIds);
                     if (gameId === "all") {
                       let gameData = Object.values(results.games);
-                      gameArt.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Twitch_logo_%28wordmark_only%29.svg/1200px-Twitch_logo_%28wordmark_only%29.svg.png";
+                      newArt.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Twitch_logo_%28wordmark_only%29.svg/1200px-Twitch_logo_%28wordmark_only%29.svg.png";
+                      document.insertBefore(newArt, newsHeader);
                       graph1Container.style.display = "flex";                      
                       graph1(gameData);
                       StreamList.makeGameOptions(results.games, results.gameIds);                      
                     } else {
                       let artSrc = Object.values(results.games)[0].boxArtUrl.replace('-{width}x{height}', '');
-                      gameArt.src = artSrc;                      
+                      newArt.src = artSrc;                      
+                      document.insertBefore(newArt, newsHeader);
                       graph1Container.style.display = "none";
                     }
 
