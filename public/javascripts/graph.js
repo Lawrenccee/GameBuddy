@@ -29,7 +29,7 @@ export const makeGameBarGraph = (data) => {
 
   let scale = d3.scaleLinear()
     .domain([0, d3.max(data, function (d) { return d.count; })])
-    .range([0, width - labelWidth - margin * 2]);
+    .range([10, width - labelWidth - margin * 2]);
 
   bar.append("rect")
     .attr("transform", `translate(${labelWidth + margin}, 0)`)
@@ -69,10 +69,19 @@ export const makeGameBarGraph = (data) => {
     tooltip.select(".count").html(`<p>Count:</p> ${d.count}`);
     tooltip.select(".percent").html(`<p>Percent of Total:</p> ${percent}%`);
     tooltip.style("display", "block");
+
+    d3.select(this).select("rect")
+      .attr("height", 3 * barHeight)
+      .attr("width", scale(d.count) + 10)
+      .attr("fill-opacity", 0.7);
   });
 
   bar.on("mouseout", function (d) {
     tooltip.style("display", "none");
+    d3.select(this).select("rect")
+      .attr("height", barHeight)
+      .attr("width", scale(d.count))
+      .attr("fill-opacity", 1.0);
   });
 
   bar.on("mousemove", function (d) {
@@ -99,6 +108,10 @@ export const makeGamePieChart = (data) => {
   let arc = d3.arc()
     .innerRadius(innerRadius)
     .outerRadius(radius);
+
+  let overArc = d3.arc()
+    .innerRadius(innerRadius)
+    .outerRadius(radius + 10);
 
   let pie = d3.pie()
     .value(function (d) { return d.count; })
@@ -136,10 +149,18 @@ export const makeGamePieChart = (data) => {
     tooltip.select(".count").html(`<p>Count:</p> ${d.data.count}`);
     tooltip.select(".percent").html(`<p>Percent of Total:</p> ${percent}%`);
     tooltip.style("display", "block");
+
+    d3.select(this)
+      .attr("d", overArc)
+      .attr("fill-opacity", 0.7);
   });
 
   path.on("mouseout", function (d) {
     tooltip.style("display", "none");
+
+    d3.select(this)
+      .attr("d", arc)
+      .attr("fill-opacity", 1.0);
   });
 
   path.on("mousemove", function (d) {
@@ -206,10 +227,18 @@ export const makeGameBubbleGraph = (data) => {
     tooltip.select(".count").html(`<p>Count:</p> ${d.data.count}`);
     tooltip.select(".percent").html(`<p>Percent of Total:</p> ${percent}%`);
     tooltip.style("display", "block");
+    d3.select(this).select("circle").transition()
+      .duration("500")
+      .attr("fill-opacity", 0.7)
+      .attr("r", d.r + 10);
   });
 
   bubbles.on("mouseout", function (d) {
     tooltip.style("display", "none");
+    d3.select(this).select("circle").transition()
+      .duration("500")
+      .attr("fill-opacity", 1.0)      
+      .attr("r", d.r);
   });
 
   bubbles.on("mousemove", function (d) {
@@ -236,6 +265,10 @@ export const makeViewerPieChart = (data, users) => {
   let arc = d3.arc()
     .innerRadius(innerRadius)
     .outerRadius(radius);
+
+  let overArc = d3.arc()
+    .innerRadius(innerRadius)
+    .outerRadius(radius + 10);
 
   let pie = d3.pie()
     .value(function(d) { return d.viewer_count; })
@@ -277,10 +310,18 @@ export const makeViewerPieChart = (data, users) => {
     tooltip.select(".viewer-count").html(`<p>People Watching:</p> ${d.data.viewer_count}`);
     tooltip.select(".percent").html(`<p>Percent of Total:</p> ${percent}%`);
     tooltip.style("display", "block");
+
+    d3.select(this)
+      .attr("d", overArc)
+      .attr("opacity", 0.7);
   });
 
   path.on("mouseout", function (d) {
     tooltip.style("display", "none");
+
+    d3.select(this)
+      .attr("d", arc)
+      .attr("opacity", 1.0);
   });
 
   path.on("mousemove", function (d) {
@@ -317,7 +358,7 @@ export const makeViewerBarGraph = (data, users) => {
 
   let scale = d3.scaleLinear()
     .domain([0, d3.max(data, function (d) { return d.viewer_count / 1000; })])
-    .range([0, width - labelWidth - margin * 2]);
+    .range([10, width - labelWidth - margin * 2]);
 
   bar.append("rect")
     .attr("transform", `translate(${labelWidth + margin}, 0)`)
@@ -361,10 +402,20 @@ export const makeViewerBarGraph = (data, users) => {
     tooltip.select(".viewer-count").html(`<p>People Watching:</p> ${d.viewer_count}`);
     tooltip.select(".percent").html(`<p>Percent of Total:</p> ${percent}%`);
     tooltip.style("display", "block");
+
+    d3.select(this).select("rect")
+      .attr("height", 3 * barHeight)
+      .attr("width", scale(d.viewer_count / 1000) + 10)
+      .attr("fill-opacity", 0.7);
   });
 
   bar.on("mouseout", function (d) {
     tooltip.style("display", "none");
+
+    d3.select(this).select("rect")
+      .attr("height", barHeight)
+      .attr("width", scale(d.viewer_count / 1000))      
+      .attr("fill-opacity", 1.0);
   });
 
   bar.on("mousemove", function (d) {
@@ -403,10 +454,10 @@ export const makeViewerBubbleGraph = (data, users) => {
 
   bubbles.append("circle")
     .attr("class", "bubble")
-    .attr("cx", function(d) { return d.x; })
-    .attr("cy", function(d) { return d.y; })
-    .attr("r", function(d) { return d.r; })
-    .attr("fill", function(d, i) { return color(i); });
+    .attr("cx", function (d) { return d.x; })
+    .attr("cy", function (d) { return d.y; })
+    .attr("r", function (d) { return d.r; })
+    .attr("fill", function (d, i) { return color(i); });
 
   let tooltip = d3.select("#graph2")
     .append("div")
@@ -424,7 +475,7 @@ export const makeViewerBubbleGraph = (data, users) => {
   tooltip.append("div")
     .attr("class", "percent");
 
-  bubbles.on("mouseover", function (d) {
+  bubbles.on("mouseover", function (d, i) {
     let totalViews = d3.sum(data.map(function (dataObj) {
       return dataObj.viewer_count;
     }));
@@ -435,10 +486,18 @@ export const makeViewerBubbleGraph = (data, users) => {
     tooltip.select(".viewer-count").html(`<p>People Watching:</p> ${d.data.viewer_count}`);
     tooltip.select(".percent").html(`<p>Percent of Total:</p> ${percent}%`);
     tooltip.style("display", "block");
+    d3.select(this).select("circle").transition()
+      .duration("500")
+      .attr("fill-opacity", 0.7)      
+      .attr("r", d.r + 10);
   });
 
   bubbles.on("mouseout", function (d) {
     tooltip.style("display", "none");
+    d3.select(this).select("circle").transition()
+      .duration("500")
+      .attr("fill-opacity", 1.0)      
+      .attr("r", d.r);
   });
 
   bubbles.on("mousemove", function (d) {

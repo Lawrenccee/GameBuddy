@@ -102,14 +102,12 @@ export const requestData = ({ gameId = "all", numResults = 20, clientId, authTok
                     if (gameId === "all") {
                       let gameData = Object.values(results.games);
                       gameArt.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Twitch_logo_%28wordmark_only%29.svg/1200px-Twitch_logo_%28wordmark_only%29.svg.png";
-                      graph2Element.style.height = "50%";
                       graph1Container.style.display = "flex";                      
                       graph1(gameData);
                       StreamList.makeGameOptions(results.games, results.gameIds);                      
                     } else {
                       let artSrc = Object.values(results.games)[0].boxArtUrl.replace('-{width}x{height}', '');
                       gameArt.src = artSrc;                      
-                      graph2Element.style.height = "70%";
                       graph1Container.style.display = "none";
                     }
 

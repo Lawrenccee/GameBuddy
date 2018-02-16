@@ -9689,14 +9689,12 @@ var requestData = exports.requestData = function requestData(_ref) {
                     if (gameId === "all") {
                       var gameData = Object.values(results.games);
                       gameArt.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Twitch_logo_%28wordmark_only%29.svg/1200px-Twitch_logo_%28wordmark_only%29.svg.png";
-                      graph2Element.style.height = "50%";
                       graph1Container.style.display = "flex";
                       graph1(gameData);
                       StreamList.makeGameOptions(results.games, results.gameIds);
                     } else {
                       var artSrc = Object.values(results.games)[0].boxArtUrl.replace('-{width}x{height}', '');
                       gameArt.src = artSrc;
-                      graph2Element.style.height = "70%";
                       graph1Container.style.display = "none";
                     }
 
@@ -9754,7 +9752,7 @@ var makeGameBarGraph = exports.makeGameBarGraph = function makeGameBarGraph(data
 
   var scale = d3.scaleLinear().domain([0, d3.max(data, function (d) {
     return d.count;
-  })]).range([0, width - labelWidth - margin * 2]);
+  })]).range([10, width - labelWidth - margin * 2]);
 
   bar.append("rect").attr("transform", "translate(" + (labelWidth + margin) + ", 0)").attr("height", barHeight).attr("width", function (d) {
     return scale(d.count);
@@ -9782,10 +9780,13 @@ var makeGameBarGraph = exports.makeGameBarGraph = function makeGameBarGraph(data
     tooltip.select(".count").html("<p>Count:</p> " + d.count);
     tooltip.select(".percent").html("<p>Percent of Total:</p> " + percent + "%");
     tooltip.style("display", "block");
+
+    d3.select(this).select("rect").attr("height", 3 * barHeight).attr("width", scale(d.count) + 10).attr("fill-opacity", 0.7);
   });
 
   bar.on("mouseout", function (d) {
     tooltip.style("display", "none");
+    d3.select(this).select("rect").attr("height", barHeight).attr("width", scale(d.count)).attr("fill-opacity", 1.0);
   });
 
   bar.on("mousemove", function (d) {
@@ -9804,6 +9805,8 @@ var makeGamePieChart = exports.makeGamePieChart = function makeGamePieChart(data
   var svg = d3.select("#graph1").append("svg").attr("width", width).attr("height", height).append("g").attr("transform", "translate(" + width / 2 + ", " + height / 2 + ")");
 
   var arc = d3.arc().innerRadius(innerRadius).outerRadius(radius);
+
+  var overArc = d3.arc().innerRadius(innerRadius).outerRadius(radius + 10);
 
   var pie = d3.pie().value(function (d) {
     return d.count;
@@ -9831,10 +9834,14 @@ var makeGamePieChart = exports.makeGamePieChart = function makeGamePieChart(data
     tooltip.select(".count").html("<p>Count:</p> " + d.data.count);
     tooltip.select(".percent").html("<p>Percent of Total:</p> " + percent + "%");
     tooltip.style("display", "block");
+
+    d3.select(this).attr("d", overArc).attr("fill-opacity", 0.7);
   });
 
   path.on("mouseout", function (d) {
     tooltip.style("display", "none");
+
+    d3.select(this).attr("d", arc).attr("fill-opacity", 1.0);
   });
 
   path.on("mousemove", function (d) {
@@ -9890,10 +9897,12 @@ var makeGameBubbleGraph = exports.makeGameBubbleGraph = function makeGameBubbleG
     tooltip.select(".count").html("<p>Count:</p> " + d.data.count);
     tooltip.select(".percent").html("<p>Percent of Total:</p> " + percent + "%");
     tooltip.style("display", "block");
+    d3.select(this).select("circle").transition().duration("500").attr("fill-opacity", 0.7).attr("r", d.r + 10);
   });
 
   bubbles.on("mouseout", function (d) {
     tooltip.style("display", "none");
+    d3.select(this).select("circle").transition().duration("500").attr("fill-opacity", 1.0).attr("r", d.r);
   });
 
   bubbles.on("mousemove", function (d) {
@@ -9912,6 +9921,8 @@ var makeViewerPieChart = exports.makeViewerPieChart = function makeViewerPieChar
   var svg = d3.select("#graph2").append("svg").attr("width", width).attr("height", height).append("g").attr("transform", "translate(" + width / 2 + ", " + height / 2 + ")");
 
   var arc = d3.arc().innerRadius(innerRadius).outerRadius(radius);
+
+  var overArc = d3.arc().innerRadius(innerRadius).outerRadius(radius + 10);
 
   var pie = d3.pie().value(function (d) {
     return d.viewer_count;
@@ -9942,10 +9953,14 @@ var makeViewerPieChart = exports.makeViewerPieChart = function makeViewerPieChar
     tooltip.select(".viewer-count").html("<p>People Watching:</p> " + d.data.viewer_count);
     tooltip.select(".percent").html("<p>Percent of Total:</p> " + percent + "%");
     tooltip.style("display", "block");
+
+    d3.select(this).attr("d", overArc).attr("opacity", 0.7);
   });
 
   path.on("mouseout", function (d) {
     tooltip.style("display", "none");
+
+    d3.select(this).attr("d", arc).attr("opacity", 1.0);
   });
 
   path.on("mousemove", function (d) {
@@ -9975,7 +9990,7 @@ var makeViewerBarGraph = exports.makeViewerBarGraph = function makeViewerBarGrap
 
   var scale = d3.scaleLinear().domain([0, d3.max(data, function (d) {
     return d.viewer_count / 1000;
-  })]).range([0, width - labelWidth - margin * 2]);
+  })]).range([10, width - labelWidth - margin * 2]);
 
   bar.append("rect").attr("transform", "translate(" + (labelWidth + margin) + ", 0)").attr("height", barHeight).attr("width", function (d) {
     return scale(d.viewer_count / 1000);
@@ -10006,10 +10021,14 @@ var makeViewerBarGraph = exports.makeViewerBarGraph = function makeViewerBarGrap
     tooltip.select(".viewer-count").html("<p>People Watching:</p> " + d.viewer_count);
     tooltip.select(".percent").html("<p>Percent of Total:</p> " + percent + "%");
     tooltip.style("display", "block");
+
+    d3.select(this).select("rect").attr("height", 3 * barHeight).attr("width", scale(d.viewer_count / 1000) + 10).attr("fill-opacity", 0.7);
   });
 
   bar.on("mouseout", function (d) {
     tooltip.style("display", "none");
+
+    d3.select(this).select("rect").attr("height", barHeight).attr("width", scale(d.viewer_count / 1000)).attr("fill-opacity", 1.0);
   });
 
   bar.on("mousemove", function (d) {
@@ -10057,7 +10076,7 @@ var makeViewerBubbleGraph = exports.makeViewerBubbleGraph = function makeViewerB
 
   tooltip.append("div").attr("class", "percent");
 
-  bubbles.on("mouseover", function (d) {
+  bubbles.on("mouseover", function (d, i) {
     var totalViews = d3.sum(data.map(function (dataObj) {
       return dataObj.viewer_count;
     }));
@@ -10068,10 +10087,12 @@ var makeViewerBubbleGraph = exports.makeViewerBubbleGraph = function makeViewerB
     tooltip.select(".viewer-count").html("<p>People Watching:</p> " + d.data.viewer_count);
     tooltip.select(".percent").html("<p>Percent of Total:</p> " + percent + "%");
     tooltip.style("display", "block");
+    d3.select(this).select("circle").transition().duration("500").attr("fill-opacity", 0.7).attr("r", d.r + 10);
   });
 
   bubbles.on("mouseout", function (d) {
     tooltip.style("display", "none");
+    d3.select(this).select("circle").transition().duration("500").attr("fill-opacity", 1.0).attr("r", d.r);
   });
 
   bubbles.on("mousemove", function (d) {

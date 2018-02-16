@@ -1,4 +1,4 @@
-h1, h2 {
+h1, h2, p {
   margin: 0;
   padding: 0;
 }
@@ -10,7 +10,30 @@ body {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  font-family: 'Bree Serif', serif;
+  font-family: 'PT Sans Narrow', sans-serif;
+  position: relative;
+}
+
+.title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px;
+}
+
+.title p {
+  margin: 0 5px;
+}
+
+.fa-github, .fa-linkedin-in {
+  font-size: 30px;
+  margin: 5px;
+}
+
+.links {
+  position: absolute;
+  right: 0;
+  margin-right: 20px;
 }
 
 .main-container {
@@ -24,16 +47,13 @@ body {
   display: flex;
   flex-direction: column;
   text-align: center;
-  padding: 20px;
-}
-
-.graph1-container h1, .graph2-container h1, .news-list-container h1 {
-  margin: 10px 0;
+  padding: 0 10px;
+  margin: 20px;
 }
 
 #graph1, #graph2 {
   width: 100%;
-  height: 50%;
+  height: 80%;
   position: relative;
   padding-right: 20px;  
 }
@@ -57,7 +77,7 @@ body {
   box-shadow: 0 0 5px #999999;
   color: #333;
   display: none;
-  font-size: 12px;
+  font-size: 14px;
   padding: 10px;
   position: absolute;
   text-align: center;
@@ -68,6 +88,7 @@ body {
 
 .tooltip p {
   font-weight: 700;
+  margin-top: 10px;
 }
 
 .news-list-container img {
@@ -78,7 +99,7 @@ body {
   display: flex;
   flex-direction: column;
   color: black;
-  margin-bottom: 20px;
+  margin: 10px 0;
 }
 
 .stream-list-container {
@@ -108,12 +129,22 @@ body > h1, body > h2 {
   margin: 10px 0;
 }
 
+.news-list-container {
+  border: 1px solid #4C3777;
+  justify-content: space-evenly;
+}
+
 #graph1 svg, #graph2 svg {
+  overflow: visible;
   -webkit-animation: fadein 2s; /* Safari, Chrome and Opera > 12.1 */
   -moz-animation: fadein 2s; /* Firefox < 16 */
   -ms-animation: fadein 2s; /* Internet Explorer */
   -o-animation: fadein 2s; /* Opera < 12.1 */
   animation: fadein 2s;
+}
+
+.graph2-container h2, .graph1-container h2 {
+  margin: 10px 0;
 }
 
 @keyframes fadein {

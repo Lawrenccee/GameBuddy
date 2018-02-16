@@ -6,19 +6,26 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
   <link rel="shortcut icon" href="">
-  <link href="https://fonts.googleapis.com/css?family=Bree+Serif" rel="stylesheet">
+  <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=PT+Sans+Narrow:400,700" rel="stylesheet">
   <link rel="stylesheet" href="./public/stylesheets/graph.css">
   <script type="application/javascript" src="./public/bundle.js"></script>
 
   <title>GameBuddy</title>
 </head>
 <body>
-  <h1>
-    GameBuddy
-  </h1>
-  <h2>
-    A Data Visualization tool for Twitch streams
-  </h2>
+  <div class="links">
+    <a href="https://github.com/lawrenccee/gameBuddy" target="_blank"><i class="fab fa-github"></i></a>
+    <a href="https://www.linkedin.com/in/lawrence-guintu-96a81a101/" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+  </div>
+  <div class="title">
+    <h1>
+      <p>GameBuddy: </p> 
+      <h2>
+        <p>A Data Visualization tool for Twitch streams</p>
+      </h2>
+    </h1>
+  </div>
   <div class="query-container">
     <form class="query-form" id="query-form">
       <label for="">Graph 1 Type:
@@ -49,11 +56,13 @@
   <div class="main-container">
     <div class="graph1-container" id="graph1-container">
       <h1>Game Distribution</h1>
+      <h2>Hover over the graph for more details!</h2>
       <div id="graph1">
       </div>
     </div>
     <div class="graph2-container"  id="graph2-container">
       <h1>Views Distribution</h1>
+      <h2>Hover over the graph for more details!</h2>      
       <div id="graph2">
       </div>
     </div>
