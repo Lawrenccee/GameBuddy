@@ -1,5 +1,7 @@
 # GameBuddy - A Data Visualizer for Twitch.tv
 
+[Live Demo](https://Lawrenccee.github.io/GameBuddy)
+
 ## Background and Overview
 
 GameBuddy is a data visualization tool that was made in the span of 4 days that displays and gets real-time top streams, their games, and streamers.
