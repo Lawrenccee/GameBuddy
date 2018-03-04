@@ -94,27 +94,33 @@ export const requestData = ({ gameId = "all", numResults = 20, clientId, authTok
                       results.users[user.id]["profileImageUrl"] = user.profile_image_url;
                     });
 
-                    let graph1Container = document.getElementById("graph1-container");                    
+                    let graph1Container = document.getElementById("graph1-container");
+                    let graph1Select = document.getElementById("graph1-select");
+                    let graph2Select = document.getElementById("graph2-select");
                     let graph2Element = document.getElementById("graph2");      
-                    let gameArt = document.getElementById("game-art");  
-                    document.removeChild(gameArt);
+                    let gameArt = document.getElementById("game-art"); 
                     let newArt = document.createElement("img");
                     newArt.id = "game-art";
-                    let newsHeader = document.getElementById("newsHeader");
+
+                    console.log(graph2Select.innerText);
 
                     StreamList.makeStreamerList(results.users, results.userIds);
                     if (gameId === "all") {
                       let gameData = Object.values(results.games);
                       newArt.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Twitch_logo_%28wordmark_only%29.svg/1200px-Twitch_logo_%28wordmark_only%29.svg.png";
-                      document.insertBefore(newArt, newsHeader);
+                      gameArt.parentNode.replaceChild(newArt, gameArt); 
                       graph1Container.style.display = "flex";                      
+                      graph1Select.style.display = "inline-block";   
+                      graph2Select.innerText = "Graph 2 Type:";                   
                       graph1(gameData);
                       StreamList.makeGameOptions(results.games, results.gameIds);                      
                     } else {
                       let artSrc = Object.values(results.games)[0].boxArtUrl.replace('-{width}x{height}', '');
                       newArt.src = artSrc;                      
-                      document.insertBefore(newArt, newsHeader);
+                      gameArt.parentNode.replaceChild(newArt, gameArt); 
                       graph1Container.style.display = "none";
+                      graph1Select.style.display = "none";
+                      graph2Select.innerText = "Graph Type:";                   
                     }
 
                     let viewerData = Object.values(results.streamData);

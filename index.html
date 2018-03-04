@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -28,14 +27,14 @@
   </div>
   <div class="query-container">
     <form class="query-form" id="query-form">
-      <label for="">Graph 1 Type:
+      <label for="" id="graph1-select">Graph 1 Type:
         <select required name="graph1" id="graph1-type">
           <option value="bar">Bar Graph</option>
           <option selected value="pie">Doughnut Chart</option>
           <option value="bubble">Bubble Graph</option>
         </select>
       </label>
-      <label for="">Graph 2 Type:
+      <label for=""><p id="graph2-select">Graph 2 Type:</p>
         <select required name="graph2" id="graph2-type">
           <option value="bar">Bar Graph</option>
           <option value="pie">Doughnut Chart</option>
@@ -53,16 +52,15 @@
       <input type="submit">
     </form>
   </div>
+  <h2>Hover over the graph for more details!</h2>  
   <div class="main-container">
     <div class="graph1-container" id="graph1-container">
       <h1>Game Distribution</h1>
-      <h2>Hover over the graph for more details!</h2>
       <div id="graph1">
       </div>
     </div>
     <div class="graph2-container"  id="graph2-container">
       <h1>Views Distribution</h1>
-      <h2>Hover over the graph for more details!</h2>      
       <div id="graph2">
       </div>
     </div>
@@ -71,7 +69,7 @@
         id="game-art"
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Twitch_logo_%28wordmark_only%29.svg/1200px-Twitch_logo_%28wordmark_only%29.svg.png">
       </img>
-      <h1 id="stream-header">Streamer List</h1>
+      <h1 id="stream-header">Streamers</h1>
       <div class="stream-list-container">
         <ol class="stream-list" id="stream-list">
         </ol>

@@ -147,6 +147,15 @@ body > h1, body > h2 {
   margin: 10px 0;
 }
 
+body > h2 {
+  font-size: 32px;
+  margin: 0;
+}
+
+#graph2-select {
+  display: inline-block;
+}
+
 @keyframes fadein {
     from { opacity: 0; }
     to   { opacity: 1; }
