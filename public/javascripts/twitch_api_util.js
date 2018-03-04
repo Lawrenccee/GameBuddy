@@ -102,8 +102,6 @@ export const requestData = ({ gameId = "all", numResults = 20, clientId, authTok
                     let newArt = document.createElement("img");
                     newArt.id = "game-art";
 
-                    console.log(graph2Select.innerText);
-
                     StreamList.makeStreamerList(results.users, results.userIds);
                     if (gameId === "all") {
                       let gameData = Object.values(results.games);

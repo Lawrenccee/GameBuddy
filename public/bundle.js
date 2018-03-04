@@ -9689,8 +9689,6 @@ var requestData = exports.requestData = function requestData(_ref) {
                     var newArt = document.createElement("img");
                     newArt.id = "game-art";
 
-                    console.log(graph2Select.innerText);
-
                     StreamList.makeStreamerList(results.users, results.userIds);
                     if (gameId === "all") {
                       var gameData = Object.values(results.games);
