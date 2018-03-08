@@ -9560,6 +9560,23 @@ document.addEventListener("DOMContentLoaded", function () {
       numResults: data["numResults"] // put zero it breaks ahh
     });
   });
+
+  // function query() {
+  //   setTimeout(() => {
+  //     let data = {};
+
+  //     let formData = new FormData(queryForm);
+  //     for (let [key, value] of formData.entries()) {
+  //       data[key] = value;
+  //     }
+
+  //     console.log(data);
+  //     queryForm.querySelector('input[type="submit"]').click();
+  //     query();
+  //   }, 3000);
+  // }
+
+  // query();
 });
 
 /***/ }),
